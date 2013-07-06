@@ -1,43 +1,13 @@
 package me.lachlanap.balloonbox.core;
 
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Game;
+import me.lachlanap.balloonbox.core.level.Level;
+import me.lachlanap.balloonbox.core.screen.level.LevelScreen;
 
-public class BalloonBoxGame implements ApplicationListener {
-	Texture texture;
-	SpriteBatch batch;
-	
-	@Override
-	public void create () {
-		texture = new Texture(Gdx.files.internal("libgdx-logo.png"));
-		batch = new SpriteBatch();
-	}
+public class BalloonBoxGame extends Game {
 
-	@Override
-	public void resize (int width, int height) {
-	}
-
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 0);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		batch.begin();
-		batch.draw(texture, 100, 100);
-		batch.end();
-	}
-
-	@Override
-	public void pause () {
-	}
-
-	@Override
-	public void resume () {
-	}
-
-	@Override
-	public void dispose () {
-	}
+    @Override
+    public void create() {
+        setScreen(new LevelScreen(new Level()));
+    }
 }
