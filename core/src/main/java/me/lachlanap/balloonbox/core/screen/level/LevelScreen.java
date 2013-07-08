@@ -15,7 +15,7 @@ import me.lachlanap.balloonbox.core.level.Level;
  */
 public class LevelScreen implements Screen {
 
-    public static final float PIXELS_IN_A_METRE = 250f;
+    public static final float PIXELS_IN_A_METRE = 240f;
     private final Level level;
     private final Viewport viewport;
     private final SpriteBatch batch;

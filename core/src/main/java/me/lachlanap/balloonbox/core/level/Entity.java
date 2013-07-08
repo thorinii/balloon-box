@@ -27,6 +27,7 @@ public class Entity {
     private Body body;
     private Fixture groundSensor;
     private boolean onGround;
+    private boolean markedForKill;
 
     public Entity(boolean fixed, Vector2 initialPosition, Vector2 size, EntityType type, boolean needsGroundSensor) {
         this.fixed = fixed;
@@ -65,8 +66,13 @@ public class Entity {
             groundSensor = body.createFixture(fixtureDef);
         }
     }
+    
+    void detachFromWorld(World world){
+        world.destroyBody(body);
+        body = null;
+    }
 
-    boolean checkGroundSensor(Contact contact) {
+    public boolean checkGroundSensor(Contact contact) {
         if (groundSensor == null)
             return false;
 
@@ -113,6 +119,14 @@ public class Entity {
         Vector2 vel = body.getLinearVelocity();
         vel.y = y;
         body.setLinearVelocity(vel);
+    }
+
+    public void markForKill() {
+        markedForKill = true;
+    }
+
+    public boolean isMarkedForKill() {
+        return markedForKill;
     }
 
     public Vector2 getPosition() {

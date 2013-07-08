@@ -1,15 +1,11 @@
 package me.lachlanap.balloonbox.core.level;
 
+import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
+import me.lachlanap.balloonbox.core.level.physics.impl.BalloonContactHandler;
 
 /**
  *
@@ -18,11 +14,13 @@ import java.util.List;
 public class Level {
 
     private final World world;
+    private final WorldContactHandler worldContactHandler;
     private final List<Entity> entities;
     private Entity boxis;
 
     public Level(Vector2 gravity) {
         world = new World(gravity, true);
+        worldContactHandler = new WorldContactHandler(this);
         setupWorld();
 
         entities = new ArrayList<>();
@@ -32,51 +30,20 @@ public class Level {
         for (int i = -15; i < 15; i++) {
             addEntity(EntityFactory.makeBrick(new Vector2(i * .6f, 0)));
         }
+
+        for (int i = -15; i < 15; i++) {
+            addEntity(EntityFactory.makeBalloon(new Vector2(i * .6f, 1)));
+        }
     }
 
     private void setupWorld() {
-        world.setContactListener(new ContactListener() {
-            @Override
-            public void beginContact(Contact contact) {
-                Fixture a = contact.getFixtureA();
-                Fixture b = contact.getFixtureB();
+        world.setContactListener(worldContactHandler);
 
-                Body boxisBody = boxis.getBody();
-
-                if (a.getBody() == boxisBody || b.getBody() == boxisBody) {
-                    if (contact.isTouching() && boxis.checkGroundSensor(contact))
-                        boxis.setOnGround(true);
-                }
-            }
-
-            @Override
-            public void endContact(Contact contact) {
-                if (contact.isTouching())
-                    return;
-
-                Fixture a = contact.getFixtureA();
-                Fixture b = contact.getFixtureB();
-
-                Body boxisBody = boxis.getBody();
-
-                if (a.getBody() == boxisBody || b.getBody() == boxisBody) {
-                    if (boxis.checkGroundSensor(contact))
-                        boxis.setOnGround(false);
-                }
-            }
-
-            @Override
-            public void preSolve(Contact contact, Manifold oldManifold) {
-            }
-
-            @Override
-            public void postSolve(Contact contact, ContactImpulse impulse) {
-            }
-        });
+        worldContactHandler.addContactHandler(new BalloonContactHandler());
     }
 
     public void addBoxis() {
-        boxis = EntityFactory.makeBoxis(new Vector2(1, 1));
+        boxis = EntityFactory.makeBoxis(new Vector2(1, 2));
         addEntity(boxis);
     }
 
@@ -96,7 +63,17 @@ public class Level {
     public void update() {
         world.step(1 / 60f, 8, 3);
 
-        for (Entity e : entities)
+        List<Entity> needKilling = new ArrayList<>();
+        for (Entity e : entities) {
             e.update();
+
+            if (e.isMarkedForKill())
+                needKilling.add(e);
+        }
+
+        for (Entity e : needKilling) {
+            e.detachFromWorld(world);
+            entities.remove(e);
+        }
     }
 }

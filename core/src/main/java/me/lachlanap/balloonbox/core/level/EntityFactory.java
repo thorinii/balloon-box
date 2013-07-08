@@ -8,15 +8,22 @@ import me.lachlanap.balloonbox.core.level.controller.KeyboardController;
  * @author lachlan
  */
 public class EntityFactory {
+    private static final Vector2 BOXIS_EXTENTS = new Vector2(.15f, .15f);
+    private static final Vector2 BRICK_EXTENTS = new Vector2(.3f, .1f);
+    private static final Vector2 BALLOON_EXTENTS = new Vector2(.128f, .32f);
 
     public static Entity makeBoxis(Vector2 pos) {
-        Entity boxis = new Entity(false, pos, new Vector2(.15f, .15f), EntityType.BOXIS, true);
+        Entity boxis = new Entity(false, pos, BOXIS_EXTENTS, EntityType.BOXIS, true);
         boxis.addController(new KeyboardController());
 
         return boxis;
     }
 
     public static Entity makeBrick(Vector2 pos) {
-        return new Entity(true, pos, new Vector2(.3f, .1f), EntityType.BLOCK, false);
+        return new Entity(true, pos, BRICK_EXTENTS, EntityType.BLOCK, false);
+    }
+    
+    public static Entity makeBalloon(Vector2 pos){
+        return new Entity(true, pos, BALLOON_EXTENTS, EntityType.BALLOON, false);
     }
 }
