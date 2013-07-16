@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import java.util.ArrayList;
 import java.util.List;
 import me.lachlanap.balloonbox.core.level.Entity;
+import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.level.Level;
 
 /**
@@ -33,10 +34,8 @@ public class WorldContactHandler implements ContactListener {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
-        Body boxisBody = level.getBoxis().getBody();
-        if (fa.getBody() == boxisBody || fb.getBody() == boxisBody)
-            if (contact.isTouching() && level.getBoxis().checkGroundSensor(contact))
-                level.getBoxis().setOnGround(true);
+        if (fa.getBody() == fb.getBody() || !contact.isEnabled())
+            return;
 
         Entity a = null;
         Entity b = null;
@@ -47,11 +46,21 @@ public class WorldContactHandler implements ContactListener {
                 b = e;
         }
 
-        if (a == null || b == null)
+        if (a != null && b != null)
+            for (EntityContantHandler handler : handlers)
+                handler.handleContact(a, b);
+
+        if (a == null && b == null)
             return;
 
-        for (EntityContantHandler handler : handlers) {
-            handler.handleContact(a, b);
+        Body boxisBody = level.getBoxis().getBody();
+        if (fa.getBody() == boxisBody || fb.getBody() == boxisBody) {
+            System.out.println(fa.getBody().getType() + " " + fb.getBody().getType());
+
+            if (level.getBoxis().checkGroundSensor(contact)) {
+                level.getBoxis().addOnGround();
+                System.out.println("+");
+            }
         }
     }
 
@@ -60,13 +69,28 @@ public class WorldContactHandler implements ContactListener {
         if (contact.isTouching())
             return;
 
-        Fixture a = contact.getFixtureA();
-        Fixture b = contact.getFixtureB();
+        Fixture fa = contact.getFixtureA();
+        Fixture fb = contact.getFixtureB();
+
+        Entity a = null;
+        Entity b = null;
+        for (Entity e : level.getEntities()) {
+            if (e.getBody() == fa.getBody())
+                a = e;
+            if (e.getBody() == fb.getBody())
+                b = e;
+        }
+
+        if (a == null && b == null)
+            return;
 
         Body boxisBody = level.getBoxis().getBody();
-        if (a.getBody() == boxisBody || b.getBody() == boxisBody)
-            if (level.getBoxis().checkGroundSensor(contact))
-                level.getBoxis().setOnGround(false);
+        if (fa.getBody() == boxisBody || fb.getBody() == boxisBody) {
+            if (level.getBoxis().checkGroundSensor(contact)) {
+                level.getBoxis().takeOnGround();
+                System.out.println("-");
+            }
+        }
     }
 
     @Override

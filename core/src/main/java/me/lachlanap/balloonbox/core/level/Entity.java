@@ -26,7 +26,7 @@ public class Entity {
     private final boolean needsGroundSensor;
     private Body body;
     private Fixture groundSensor;
-    private boolean onGround;
+    private int onGroundContacts;
     private boolean markedForKill;
 
     public Entity(boolean fixed, Vector2 initialPosition, Vector2 size, EntityType type, boolean needsGroundSensor) {
@@ -66,8 +66,8 @@ public class Entity {
             groundSensor = body.createFixture(fixtureDef);
         }
     }
-    
-    void detachFromWorld(World world){
+
+    void detachFromWorld(World world) {
         world.destroyBody(body);
         body = null;
     }
@@ -99,12 +99,15 @@ public class Entity {
         }
     }
 
-    public void setOnGround(boolean b) {
-        onGround = b;
+    public void addOnGround() {
+        onGroundContacts++;
+    }
+    public void takeOnGround() {
+        onGroundContacts--;
     }
 
     public boolean isOnGround() {
-        return onGround;
+        return onGroundContacts > 0;
     }
 
     public void addForce(Vector2 force) {
