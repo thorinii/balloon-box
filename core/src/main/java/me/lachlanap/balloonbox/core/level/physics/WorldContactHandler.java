@@ -1,5 +1,6 @@
 package me.lachlanap.balloonbox.core.level.physics;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -9,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Manifold;
 import java.util.ArrayList;
 import java.util.List;
 import me.lachlanap.balloonbox.core.level.Entity;
-import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.level.Level;
 
 /**
@@ -20,6 +20,8 @@ public class WorldContactHandler implements ContactListener {
 
     private final Level level;
     private final List<EntityContantHandler> handlers = new ArrayList<>();
+    private Body exitFanSensorBody;
+    private boolean exitFanOn;
 
     public WorldContactHandler(final Level level) {
         this.level = level;
@@ -46,21 +48,24 @@ public class WorldContactHandler implements ContactListener {
                 b = e;
         }
 
-        if (a != null && b != null)
+        if (a != null && b != null && !a.isMarkedForKill() && !b.isMarkedForKill())
             for (EntityContantHandler handler : handlers)
                 handler.handleContact(a, b);
 
-        if (a == null && b == null)
-            return;
-
         Body boxisBody = level.getBoxis().getBody();
         if (fa.getBody() == boxisBody || fb.getBody() == boxisBody) {
-            System.out.println(fa.getBody().getType() + " " + fb.getBody().getType());
+            Body other = (fa.getBody() == boxisBody) ? fb.getBody() : fa.getBody();
 
             if (level.getBoxis().checkGroundSensor(contact)) {
+                if ((a != null && !a.canJumpOn()) || (b != null && !b.canJumpOn()))
+                    return;
+
                 level.getBoxis().addOnGround();
-                System.out.println("+");
             }
+
+            if (other == exitFanSensorBody)
+                exitFanOn = true;
+
         }
     }
 
@@ -86,10 +91,14 @@ public class WorldContactHandler implements ContactListener {
 
         Body boxisBody = level.getBoxis().getBody();
         if (fa.getBody() == boxisBody || fb.getBody() == boxisBody) {
+            Body other = (fa.getBody() == boxisBody) ? fb.getBody() : fa.getBody();
+
             if (level.getBoxis().checkGroundSensor(contact)) {
                 level.getBoxis().takeOnGround();
-                System.out.println("-");
             }
+
+            if (other == exitFanSensorBody)
+                exitFanOn = false;
         }
     }
 
@@ -116,5 +125,13 @@ public class WorldContactHandler implements ContactListener {
 
     @Override
     public void postSolve(Contact contact, ContactImpulse impulse) {
+    }
+
+    public void setExitFanSensor(Body exitFanSensorBody) {
+        this.exitFanSensorBody = exitFanSensorBody;
+    }
+
+    public boolean isExitFanOn() {
+        return exitFanOn;
     }
 }

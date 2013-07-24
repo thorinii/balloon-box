@@ -1,16 +1,16 @@
 package me.lachlanap.balloonbox.core.level;
 
-import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.ChainShape;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
-import me.lachlanap.balloonbox.core.level.physics.GridToChainFactory;
+import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
+import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonContactHandler;
+import me.lachlanap.lct.Constant;
 
 /**
  *
@@ -18,59 +18,81 @@ import me.lachlanap.balloonbox.core.level.physics.impl.BalloonContactHandler;
  */
 public class Level {
 
+    @Constant(name = "Exit Scale", constraints = "0,0.5")
+    public static float EXIT_SCALE = .013f;
+    public static final float EXIT_SENSOR_WIDTH = 0.2f;
+    public static final float EXIT_SENSOR_HEIGHT = 2f;
+    private final StaticLevelData staticLevelData;
     private final List<Entity> entities;
     private final Score score;
     private final World world;
     private final WorldContactHandler worldContactHandler;
-    private final boolean[][] brickMap;
+    private boolean gameover;
     private Entity boxis;
 
-    public Level(Vector2 gravity, boolean[][] brickMap) {
-        entities = new ArrayList<>();
-        score = new Score();
+    public static class StaticLevelData {
 
-        this.brickMap = brickMap;
+        public static final float GRID_SCALE = 0.2f;
+        public final boolean[][] brickMap;
+        public final Vector2 spawnPoint;
+        public final Vector2 exitPoint;
+        public final List<Vector2> balloons;
 
-        world = new World(gravity, true);
-        worldContactHandler = new WorldContactHandler(this);
-        setupWorld(GridToChainFactory.makeChainShapes(brickMap, 0.1f));
+        public StaticLevelData(boolean[][] brickMap, Vector2 spawnPoint, Vector2 exitPoint,
+                List<Vector2> balloons) {
+            this.brickMap = brickMap;
+            this.balloons = balloons;
+            this.spawnPoint = spawnPoint;
+            this.exitPoint = exitPoint;
 
-        addBoxis();
-
-        /*for (int i = -15; i < 15; i++) {
-         addEntity(EntityFactory.makeBrick(new Vector2(i * .6f, 0)));
-         }*/
-
-        for (int i = -15; i < 15; i++) {
-            addEntity(EntityFactory.makeBalloon(new Vector2(i * .6f, 1)));
+            spawnPoint.scl(GRID_SCALE);
+            exitPoint.scl(GRID_SCALE);
+            for (Vector2 balloon : balloons) {
+                balloon.scl(GRID_SCALE);
+            }
         }
     }
 
-    private void setupWorld(ChainShape[] brickGeometry) {
-        BodyDef def = new BodyDef();
-        def.type = BodyDef.BodyType.StaticBody;
-        def.position.set(0, 0);
-        def.awake = true;
+    public Level(
+            Vector2 gravity,
+            StaticLevelData staticLevelData) {
+        entities = new ArrayList<>();
+        score = new Score();
 
-        Body bricks = world.createBody(def);
+        this.staticLevelData = staticLevelData;
 
-        for (ChainShape shape : brickGeometry) {
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.density = 1;
-            fixtureDef.restitution = 0.1f;
-            fixtureDef.friction = 0.1f;
-            fixtureDef.shape = shape;
+        world = new World(gravity, true);
+        worldContactHandler = new WorldContactHandler(this);
+        setupWorld();
 
-            bricks.createFixture(fixtureDef);
-        }
+
+        addBoxis();
+
+        gameover = false;
+    }
+
+    private void setupWorld() {
+        Box2DFactory.createLevelGeometry(world, staticLevelData);
 
         world.setContactListener(worldContactHandler);
         worldContactHandler.addContactHandler(new BalloonContactHandler(score));
 
+
+        /* Add an exit sensor */
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2, new Vector2(0, EXIT_SENSOR_HEIGHT / 2), 0);
+
+        Body exitFanSensorBody = Box2DFactory.createSensor(world, staticLevelData.exitPoint, shape);
+        worldContactHandler.setExitFanSensor(exitFanSensorBody);
+
+
+        for (Vector2 balloon : staticLevelData.balloons) {
+            addEntity(EntityFactory.makeBalloon(balloon));
+        }
     }
 
     public void addBoxis() {
-        boxis = EntityFactory.makeBoxis(new Vector2(7, 3));
+        boxis = EntityFactory.makeBoxis(staticLevelData.spawnPoint.cpy().add(0, 1f));
         addEntity(boxis);
     }
 
@@ -79,8 +101,8 @@ public class Level {
         entities.add(entity);
     }
 
-    public boolean[][] getBrickMap() {
-        return brickMap;
+    public StaticLevelData getStaticLevelData() {
+        return staticLevelData;
     }
 
     public World getWorld() {
@@ -113,6 +135,35 @@ public class Level {
         for (Entity e : needKilling) {
             e.detachFromWorld(world);
             entities.remove(e);
+        }
+
+
+
+        if (!gameover && worldContactHandler.isExitFanOn()) {
+            Body boxisBody = boxis.getBody();
+
+            Vector2 dist = staticLevelData.exitPoint.cpy().sub(boxisBody.getPosition());
+            dist.y += 0.7;
+
+            Vector2 impulse = dist.cpy();
+            impulse.x *= 0.04f;
+            impulse.y = EXIT_SCALE;
+
+            impulse.scl(1 / dist.len());
+            impulse.y = Math.min(impulse.y, 0.035f);
+
+            boxisBody.applyLinearImpulse(impulse, boxisBody.getPosition(), true);
+
+            System.out.println("Fan effect: " + impulse + " " + dist);
+
+            if (dist.y < -0.3f) {
+                boxisBody.setType(BodyDef.BodyType.StaticBody);
+                boxisBody.setTransform(
+                        staticLevelData.exitPoint.cpy().add(0, 1f),
+                        0);
+
+                gameover = true;
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ public class GridToChainFactoryTest {
     public void testNull() {
         boolean[][] grid = new boolean[10][10];
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get no chains", chains.size(), is(0));
     }
 
@@ -33,7 +33,7 @@ public class GridToChainFactoryTest {
 
         grid[1][1] = true;
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 1 chain", chains.size(), is(1));
 
         List<Vector2> chain = chains.get(0);
@@ -51,7 +51,7 @@ public class GridToChainFactoryTest {
 
         grid[0][0] = true;
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 1 chain", chains.size(), is(1));
 
         List<Vector2> chain = chains.get(0);
@@ -70,7 +70,7 @@ public class GridToChainFactoryTest {
         grid[0][0] = true;
         grid[1][0] = true;
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 1 chain", chains.size(), is(1));
 
         List<Vector2> chain = chains.get(0);
@@ -91,7 +91,7 @@ public class GridToChainFactoryTest {
         grid[0][0] = true;
         grid[0][1] = true;
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 1 chain", chains.size(), is(1));
 
         List<Vector2> chain = chains.get(0);
@@ -119,7 +119,7 @@ public class GridToChainFactoryTest {
         grid[2][1] = true;
         grid[3][1] = true;
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 2 chains", chains.size(), is(2));
 
         List<Vector2> chain = chains.get(0);
@@ -163,7 +163,7 @@ public class GridToChainFactoryTest {
             {false, false, false, true, false},
             {false, false, false, true, false},};
 
-        List<List<Vector2>> chains = GridToChainFactory.makeChainPoints(grid);
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 1 chain", chains.size(), is(1));
 
         List<Vector2> chain = chains.get(0);

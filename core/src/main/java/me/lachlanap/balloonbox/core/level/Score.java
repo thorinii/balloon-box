@@ -17,7 +17,6 @@ public class Score {
 
     public void collectBalloon() {
         balloons++;
-        System.out.println(balloons);
     }
 
     public void collectStar() {

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
 import me.lachlanap.balloonbox.core.level.controller.Controller;
+import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 
 /**
  *
@@ -38,30 +39,20 @@ public class Entity {
     }
 
     void attachToWorld(World world) {
-        BodyDef def = new BodyDef();
-        def.type = fixed ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
-        def.position.set(initialPosition);
-        def.fixedRotation = true;
-        def.awake = !fixed;
-
-        body = world.createBody(def);
-
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.density = 1;
-        fixtureDef.restitution = 0.1f;
-        fixtureDef.friction = 0.1f;
-
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(size.x, size.y);
-        fixtureDef.shape = shape;
-
-        body.createFixture(fixtureDef);
-
+        if (fixed) {
+            body = Box2DFactory.createFixed(world, initialPosition, size);
+        } else {
+            body = Box2DFactory.createDynamic(world, initialPosition, size, 1);
+        }
 
         if (needsGroundSensor) {
-            shape.setAsBox(size.x, size.y / 4, new Vector2(0, -size.y / (3 / 4f)), 0);
+            FixtureDef fixtureDef = new FixtureDef();
+            //fixtureDef.density = 1;
             fixtureDef.isSensor = true;
+
+            PolygonShape shape = new PolygonShape();
+            shape.setAsBox(size.x * 0.9f, size.y / 4, new Vector2(0, -size.y / (3 / 4f)), 0);
+            fixtureDef.shape = shape;
 
             groundSensor = body.createFixture(fixtureDef);
         }
@@ -77,9 +68,9 @@ public class Entity {
             return false;
 
         if (contact.getFixtureA() == groundSensor)
-            return true;
+            return !contact.getFixtureB().isSensor();
         if (contact.getFixtureB() == groundSensor)
-            return true;
+            return !contact.getFixtureA().isSensor();
 
         return false;
     }
@@ -102,8 +93,13 @@ public class Entity {
     public void addOnGround() {
         onGroundContacts++;
     }
+
     public void takeOnGround() {
         onGroundContacts--;
+    }
+
+    public int getOnGroundContacts() {
+        return onGroundContacts;
     }
 
     public boolean isOnGround() {
@@ -142,5 +138,17 @@ public class Entity {
 
     public EntityType getType() {
         return type;
+    }
+
+    public boolean canJumpOn() {
+        return type != EntityType.BALLOON;
+    }
+
+    @Override
+    public String toString() {
+        return "[Entity #" + hashCode() + ":"
+                + " type=" + type.name()
+                + " fixed=" + fixed
+                + "]";
     }
 }

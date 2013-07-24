@@ -25,9 +25,12 @@ public class KeyboardController extends Controller {
             if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.SPACE)) {
                 entity.shoveY(2f);
             }
+        if (Gdx.input.isKeyPressed(Keys.F)) {
+            entity.addForce(0, 2.7f);
+        }
 
         if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
-            entity.addForce(0, -0.3f);
+            entity.addForce(0, -1.5f);
         }
     }
 }
