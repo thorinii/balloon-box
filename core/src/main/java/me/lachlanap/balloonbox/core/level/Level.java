@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
+import me.lachlanap.balloonbox.core.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonContactHandler;
@@ -27,6 +28,7 @@ public class Level {
     private final Score score;
     private final World world;
     private final WorldContactHandler worldContactHandler;
+    private PerformanceMonitor performanceMonitor = null;
     private boolean gameover;
     private Entity boxis;
 
@@ -72,6 +74,7 @@ public class Level {
     }
 
     private void setupWorld() {
+        System.out.println("Generating level geometry...");
         Box2DFactory.createLevelGeometry(world, staticLevelData);
 
         world.setContactListener(worldContactHandler);
@@ -86,9 +89,14 @@ public class Level {
         worldContactHandler.setExitFanSensor(exitFanSensorBody);
 
 
+        System.out.println("Generating balloons...");
         for (Vector2 balloon : staticLevelData.balloons) {
             addEntity(EntityFactory.makeBalloon(balloon));
         }
+    }
+
+    public void setPerformanceMonitor(PerformanceMonitor performanceMonitor) {
+        this.performanceMonitor = performanceMonitor;
     }
 
     public void addBoxis() {
@@ -121,24 +129,33 @@ public class Level {
         return score;
     }
 
-    public void update() {
-        world.step(1 / 60f, 8, 3);
+    public boolean isGameover() {
+        return gameover;
+    }
 
+    public void update() {
+        performanceMonitor.begin("Level Update");
+        
+        performanceMonitor.begin("Level Update - Box2D Tick");
+        world.step(1 / 60f, 8, 3);
+        performanceMonitor.end("Level Update - Box2D Tick");
+
+        
+        performanceMonitor.begin("Level Update - Removing Dead");
         List<Entity> needKilling = new ArrayList<>();
         for (Entity e : entities) {
             e.update();
 
-            if (e.isMarkedForKill())
+            if (e.isMarkedForKill()) {
                 needKilling.add(e);
+                e.detachFromWorld(world);
+            }
         }
 
-        for (Entity e : needKilling) {
-            e.detachFromWorld(world);
-            entities.remove(e);
-        }
+        entities.removeAll(needKilling);
+        performanceMonitor.end("Level Update - Removing Dead");
 
-
-
+        
         if (!gameover && worldContactHandler.isExitFanOn()) {
             Body boxisBody = boxis.getBody();
 
@@ -154,8 +171,6 @@ public class Level {
 
             boxisBody.applyLinearImpulse(impulse, boxisBody.getPosition(), true);
 
-            System.out.println("Fan effect: " + impulse + " " + dist);
-
             if (dist.y < -0.3f) {
                 boxisBody.setType(BodyDef.BodyType.StaticBody);
                 boxisBody.setTransform(
@@ -165,5 +180,7 @@ public class Level {
                 gameover = true;
             }
         }
+        
+        performanceMonitor.end("Level Update");
     }
 }

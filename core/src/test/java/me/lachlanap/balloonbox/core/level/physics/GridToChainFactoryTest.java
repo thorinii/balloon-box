@@ -1,14 +1,11 @@
 package me.lachlanap.balloonbox.core.level.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.ChainShape;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.junit.Assume.*;
 import static org.hamcrest.CoreMatchers.*;
-import org.junit.Ignore;
-import static org.junit.matchers.JUnitMatchers.*;
 
 /**
  *
@@ -106,62 +103,70 @@ public class GridToChainFactoryTest {
     }
 
     @Test
+    public void testTwoDiags() {
+        String[] gridDef = {
+            " x",
+            "x "
+        };
+
+        String[] path = {
+            " 1 ",
+            "32 ",
+            "45 "
+        };
+        
+        boolean[][] grid = gridFromPattern(gridDef);
+
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
+        assertThat("Didn't get 1 chain", chains.size(), is(2));
+
+        List<Vector2> chain = chains.get(0);
+        assertThat(chain, is(pathFromPattern(path)));
+    }
+
+    @Test
     public void testTwoChains() {
-        // x x
-        // x xx
+        String[] gridDef = {
+            "x x ",
+            "x xx"
+        };
 
-        boolean[][] grid = new boolean[5][5];
+        String[] path1 = {
+            "16",
+            "25",
+            "34"
+        };
 
-        grid[0][0] = true;
-        grid[0][1] = true;
+        String[] path2 = {
+            "  18 ",
+            "  276",
+            "  345"
+        };
 
-        grid[2][0] = true;
-        grid[2][1] = true;
-        grid[3][1] = true;
+        boolean[][] grid = gridFromPattern(gridDef);
 
         List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 2 chains", chains.size(), is(2));
 
         List<Vector2> chain = chains.get(0);
         assertThat("Chain doesn't have 6 points", chain.size(), is(6));
-
-        assertThat(chain.get(0), is(new Vector2(0, 0)));
-        assertThat(chain.get(1), is(new Vector2(0, 1)));
-        assertThat(chain.get(2), is(new Vector2(0, 2)));
-        assertThat(chain.get(3), is(new Vector2(1, 2)));
-        assertThat(chain.get(4), is(new Vector2(1, 1)));
-        assertThat(chain.get(5), is(new Vector2(1, 0)));
-
+        assertThat(chain, is(pathFromPattern(path1)));
 
         chain = chains.get(1);
         assertThat("Chain doesn't have 8 points", chain.size(), is(8));
-
-        assertThat(chain.get(0), is(new Vector2(2, 0)));
-        assertThat(chain.get(1), is(new Vector2(2, 1)));
-        assertThat(chain.get(2), is(new Vector2(2, 2)));
-        assertThat(chain.get(3), is(new Vector2(3, 2)));
-        assertThat(chain.get(4), is(new Vector2(4, 2)));
-        assertThat(chain.get(5), is(new Vector2(4, 1)));
-        assertThat(chain.get(6), is(new Vector2(3, 1)));
-        assertThat(chain.get(7), is(new Vector2(3, 0)));
+        assertThat(chain, is(pathFromPattern(path2)));
     }
 
     @Test
     public void testComplex1() {
-        // xxxxx
-        //  xx
-        //   x
-        //   xxxxx
-        //   x
+        String[] gridDef = {
+            "xxxxx  ",
+            " xx    ",
+            "  x    ",
+            "  xxxxx",
+            "  x    ",};
 
-        boolean[][] grid = new boolean[][]{
-            {true, false, false, false, false},
-            {true, true, false, false, false},
-            {true, true, true, true, true},
-            {true, false, false, true, false},
-            {true, false, false, true, false},
-            {false, false, false, true, false},
-            {false, false, false, true, false},};
+        boolean[][] grid = gridFromPattern(gridDef);
 
         List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
         assertThat("Didn't get 1 chain", chains.size(), is(1));
@@ -197,5 +202,103 @@ public class GridToChainFactoryTest {
         assertThat(chain.get(25), is(new Vector2(3, 0)));
         assertThat(chain.get(26), is(new Vector2(2, 0)));
         assertThat(chain.get(27), is(new Vector2(1, 0)));
+    }
+
+    @Test
+    public void testComplex2() {
+        String[] gridDef = {
+            "  xxx",
+            "xx  x",
+            "x   x",
+            "x   x"
+        };
+
+        String[] path = {
+            "  1   ",
+            "432   ",
+            "5ab   ",
+            "69    ",
+            "78    "
+        };
+
+        boolean[][] grid = gridFromPattern(gridDef);
+
+
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
+        assertThat("Didn't get 1 chain", chains.size(), is(1));
+
+        List<Vector2> chain = chains.get(0);
+        //assertThat("Chain doesn't have 4 points", chain.size(), is(16));
+        assertThat(chain, is(pathFromPattern(path)));
+    }
+
+    private static boolean[][] gridFromPattern(String[] pattern) {
+        boolean[][] grid = new boolean[pattern[0].length()][pattern.length];
+
+        int y, x;
+        y = 0;
+        for (String line : pattern) {
+            x = 0;
+            for (char c : line.toCharArray()) {
+                grid[x][y] = Character.isLetterOrDigit(c);
+
+                x++;
+            }
+
+            y++;
+        }
+
+        return grid;
+    }
+
+    private static List<Vector2> pathFromPattern(String[] pattern) {
+        final int H = pattern.length, W = pattern[0].length();
+
+        int[][] grid = new int[W][H];
+        int max = 0;
+
+        for (int y = 0; y < H; y++) {
+            char[] line = pattern[y].toCharArray();
+            if (line.length != W)
+                throw new IllegalArgumentException("Pattern must be a uniform grid");
+
+            for (int x = 0; x < W; x++) {
+                char c = line[x];
+
+                if (!Character.isLetterOrDigit(c))
+                    grid[x][y] = -1;
+
+                if (c < '0')
+                    continue;
+                else if (c <= '9')
+                    grid[x][y] = c - '0';
+                else if (c < 'a')
+                    continue;
+                else if (c <= 'z')
+                    grid[x][y] = c - 'a' + 10;
+                else if (c < 'A')
+                    continue;
+                else if (c <= 'Z')
+                    grid[x][y] = c - 'A' + 36;
+
+                max = Math.max(max, grid[x][y]);
+                System.out.print(grid[x][y]);
+            }
+
+            System.out.println();
+        }
+
+        List<Vector2> points = new ArrayList<>();
+        for (int i = 0; i < max + 1; i++) {
+            for (int x = 0; x < W; x++) {
+                for (int y = 0; y < H; y++) {
+                    if (grid[x][y] == i) {
+                        points.add(new Vector2(x, y));
+                    }
+                }
+            }
+        }
+
+        return points;
     }
 }

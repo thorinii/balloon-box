@@ -3,7 +3,10 @@ package me.lachlanap.balloonbox.core.level.physics;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.ChainShape;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Generates a list of paths/chains from a grid of boolean squares.
@@ -25,8 +28,9 @@ public class GridToChainFactory {
         List<ChainShape> chains = new ArrayList<>();
 
         for (List<Vector2> pointChain : pointChains) {
-            for (Vector2 v : pointChain)
+            for (Vector2 v : pointChain) {
                 v.scl(scale);
+            }
 
             ChainShape chain = new ChainShape();
             chain.createLoop(pointChain.toArray(new Vector2[pointChain.size()]));
@@ -42,18 +46,22 @@ public class GridToChainFactory {
      */
     public static List<List<Vector2>> makePath(boolean[][] originalGrid) {
         int[][] working = new int[originalGrid.length][originalGrid[0].length];
+        final int W = working.length;
+        final int H = working[0].length;
+
+        if (W == 0 || H == 0)
+            return Collections.EMPTY_LIST;
 
         // Setup the working copy - all 'on' cells are set to be filled
-        for (int i = 0; i < working.length; i++) {
-            for (int j = 0; j < working[i].length; j++) {
-                if (originalGrid[i][j]) {
+        for (int j = 0; j < H; j++)
+            for (int i = 0; i < W; i++)
+                if (originalGrid[i][j])
                     working[i][j] = G_FILLED;
-                }
-            }
-        }
+
 
         List<List<Vector2>> chains = new ArrayList<>();
         List<Vector2> chainPoints = new ArrayList<>();
+        Set<Vector2> circularFilter = new HashSet<>();
 
         // Process the grid
         // Start by finding a filled cell
@@ -65,7 +73,11 @@ public class GridToChainFactory {
                     // Once we've found such a cell, walk along the edge of it
                     // until we get to the start
                     do {
-                        chainPoints.add(p.cpy());
+                        Vector2 cpy = p.cpy();
+                        chainPoints.add(cpy);
+                        if (!circularFilter.add(cpy))
+                            throw new IllegalStateException(
+                                    "Detected Circular Dependency at + " + p);
 
                         if (sg(working, p.x, p.y) == G_FILLED
                                 && sg(working, p.x - 1, p.y) != G_FILLED) {
@@ -92,8 +104,10 @@ public class GridToChainFactory {
                     if (chainPoints.size() < 4)
                         continue;
 
+
                     chains.add(chainPoints);
                     chainPoints = new ArrayList<>();
+                    circularFilter = new HashSet<>();
                 }
             }
         }

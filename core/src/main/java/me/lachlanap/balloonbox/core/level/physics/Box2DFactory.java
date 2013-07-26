@@ -50,13 +50,10 @@ public class Box2DFactory {
         Body body = world.createBody(def);
 
 
-        FixtureDef fixtureDef = new FixtureDef();
-        //fixtureDef.density = 1;
-        //fixtureDef.restitution = 0.1f;
-        //fixtureDef.friction = 0.1f;
-
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(size.x / 2f, size.y / 2f);
+        
+        FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
 
         body.createFixture(fixtureDef);

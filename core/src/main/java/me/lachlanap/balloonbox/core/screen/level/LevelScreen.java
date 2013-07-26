@@ -8,7 +8,13 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import me.lachlanap.balloonbox.core.PerformanceMonitor;
+import me.lachlanap.balloonbox.core.PerformanceMonitor.StopWatch;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.level.Level;
@@ -23,22 +29,24 @@ public class LevelScreen implements Screen {
 
     public static final float PIXELS_IN_A_METRE = 240f;
     private final Level level;
+    private final PerformanceMonitor performanceMonitor;
     private final Viewport viewport;
     private final SpriteBatch batch;
     private final ShapeRenderer shapeRenderer;
     private final TextureBook textureBook;
     private final BitmapFont font;
-    private final Box2DDebugRenderer debugRenderer;
     private float timeSinceLastUpdate;
 
     public LevelScreen(Level level) {
         this.level = level;
 
+        performanceMonitor = new PerformanceMonitor();
+        level.setPerformanceMonitor(performanceMonitor);
+
         viewport = new Viewport(new Vector2(1080, 720));
 
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
-        debugRenderer = new Box2DDebugRenderer();
 
         textureBook = new TextureBook();
         textureBook.load();
@@ -59,20 +67,27 @@ public class LevelScreen implements Screen {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 
-        batch.begin();
+        performanceMonitor.begin("Render");
 
         viewport.follow(level.getBoxis());
         Vector2 viewportCentre = viewport.getCentre();
 
+        performanceMonitor.begin("Render - Entities");
+        batch.begin();
         renderEntities(viewportCentre);
-        renderPipes(viewportCentre);
-        renderScore();
+        batch.end();
+        performanceMonitor.end("Render - Entities");
 
+        batch.begin();
+        renderPipes(viewportCentre);
+        renderBricks(viewportCentre);
+        renderScore();
         batch.end();
 
-        renderBricks(viewportCentre);
+        performanceMonitor.end("Render");
 
-        debugRenderer.render(level.getWorld(), batch.getProjectionMatrix());
+        if (false)
+            renderDebug(viewportCentre);
     }
 
     private void renderBricks(Vector2 viewportCentre) {
@@ -80,29 +95,27 @@ public class LevelScreen implements Screen {
 
         Texture texture = textureBook.getEntityTexture(EntityType.BLOCK);
 
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 1);
         for (int i = 0; i < brickMap.length; i++) {
             for (int j = brickMap[0].length - 1; j >= 0; j--) {
-                if (!brickMap[i][j])
+                if (!brickMap[i][ brickMap[0].length - j - 1])
                     continue;
+                //if (i * PIXELS_IN_A_METRE > viewportCentre.x)
+                //    continue;
+                //if (j * PIXELS_IN_A_METRE > viewportCentre.y)
+                //    continue;
 
-                /* batch.draw(texture,
-                 i * PIXELS_IN_A_METRE / GRID_SCALE - texture.getWidth() / 2 + viewportCentre.x,
-                 j * PIXELS_IN_A_METRE / GRID_SCALE - texture.getHeight() / 2 + viewportCentre.y,
-                 texture.getWidth() / 2, texture.getHeight() / 2,
-                 texture.getWidth(), texture.getHeight(),
-                 1, 1,
-                 0,
-                 0, 0, texture.getWidth(), texture.getHeight(),
-                 false, false);*/
-                shapeRenderer.rect(i * PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE + viewportCentre.x,
-                                   j * PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE + viewportCentre.y,
-                                   PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE,
-                                   PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE);
+                batch.draw(texture,
+                           i * PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE + viewportCentre.x,
+                           j * PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE + viewportCentre.y,
+                           texture.getWidth() / 2, texture.getHeight() / 2,
+                           PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE,
+                           PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE,
+                           1, 1,
+                           0,
+                           0, 0, texture.getWidth(), texture.getHeight(),
+                           false, false);
             }
         }
-        shapeRenderer.end();
     }
 
     private void renderEntities(Vector2 viewportCentre) {
@@ -153,6 +166,61 @@ public class LevelScreen implements Screen {
         Score score = level.getScore();
 
         font.draw(batch, String.valueOf(score.getBalloons()), 1000, 680);
+    }
+
+    private void renderDebug(Vector2 viewportCentre) {
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(.1f, .3f, .8f, 1);
+
+        for (Entity e : level.getEntities()) {
+            Vector2 centre = e.getPosition();
+            Vector2 size = e.getSize();
+
+            shapeRenderer.rect((centre.x - size.x / 2) * PIXELS_IN_A_METRE + viewportCentre.x,
+                               (centre.y - size.y / 2) * PIXELS_IN_A_METRE + viewportCentre.y,
+                               size.x * PIXELS_IN_A_METRE,
+                               size.y * PIXELS_IN_A_METRE);
+        }
+
+        shapeRenderer.end();
+
+
+        List<StopWatch> stopWatches = new ArrayList<>(performanceMonitor.getData());
+        Collections.sort(stopWatches, new Comparator<StopWatch>() {
+            @Override
+            public int compare(StopWatch o1, StopWatch o2) {
+                return o1.name.compareTo(o2.name);
+            }
+        });
+
+
+        batch.begin();
+
+        float total = 0;
+        for (StopWatch watch : stopWatches) {
+            total += watch.avg;
+        }
+
+        NumberFormat per = NumberFormat.getNumberInstance();
+        per.setMinimumIntegerDigits(2);
+        per.setMinimumFractionDigits(1);
+        per.setMaximumFractionDigits(1);
+        NumberFormat time = NumberFormat.getNumberInstance();
+        time.setMinimumIntegerDigits(4);
+        time.setMinimumFractionDigits(0);
+        time.setMaximumFractionDigits(0);
+
+        int i = 0;
+        for (StopWatch watch : stopWatches) {
+            font.draw(batch,
+                      per.format(100f * watch.avg / total) + "% : "
+                    + time.format(1000000 * watch.time) + "us : "
+                    + watch.name,
+                      10, 30 + i * 30);
+            i++;
+        }
+
+        batch.end();
     }
 
     @Override

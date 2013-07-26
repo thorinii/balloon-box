@@ -21,7 +21,7 @@ public class TextureBook {
 
     public void load() {
         entityTextures.put(EntityType.BOXIS, new Texture(Gdx.files.internal("box/box.png")));
-        entityTextures.put(EntityType.BLOCK, new Texture(Gdx.files.internal("wall/bricks.png")));
+        entityTextures.put(EntityType.BLOCK, new Texture(Gdx.files.internal("wall/brick.png")));
         entityTextures.put(EntityType.BALLOON, new Texture(Gdx.files.internal("balloon/balloon.png")));
 
         entryPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));

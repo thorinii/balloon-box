@@ -2,7 +2,6 @@ package me.lachlanap.balloonbox.core.level;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -47,11 +46,10 @@ public class Entity {
 
         if (needsGroundSensor) {
             FixtureDef fixtureDef = new FixtureDef();
-            //fixtureDef.density = 1;
             fixtureDef.isSensor = true;
 
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(size.x * 0.9f, size.y / 4, new Vector2(0, -size.y / (3 / 4f)), 0);
+            shape.setAsBox(size.x * 0.4f, size.y / 8, new Vector2(0, -size.y / (6 / 4f)), 0);
             fixtureDef.shape = shape;
 
             groundSensor = body.createFixture(fixtureDef);
@@ -132,6 +130,10 @@ public class Entity {
         return body.getPosition();
     }
 
+    public Vector2 getSize() {
+        return size;
+    }
+
     public float getAngle() {
         return body.getAngle();
     }
@@ -146,7 +148,7 @@ public class Entity {
 
     @Override
     public String toString() {
-        return "[Entity #" + hashCode() + ":"
+        return "[Entity #" + Integer.toHexString(hashCode()).toUpperCase() + ":"
                 + " type=" + type.name()
                 + " fixed=" + fixed
                 + "]";

@@ -21,9 +21,13 @@ public class LevelLoader {
     private static final float UNITS_IN_GRID = 32f;
 
     public Level loadLevel(String mapName) {
+        System.out.println("Loading level " + mapName + "...");
+
         TiledMap map = new TmxMapLoader().load("maps/" + mapName + ".tmx");
         TiledMapTileLayer brickLayer = (TiledMapTileLayer) map.getLayers().get("bricks");
 
+
+        System.out.println("Collecting bricks...");
         boolean[][] brickMap = new boolean[brickLayer.getWidth()][brickLayer.getHeight()];
         for (int i = 0; i < brickLayer.getWidth(); i++) {
             for (int j = 0; j < brickLayer.getHeight(); j++) {
@@ -32,6 +36,7 @@ public class LevelLoader {
         }
 
 
+        System.out.println("Loading points");
         MapLayer pointsLayer = map.getLayers().get("points");
         MapProperties spawnProps = pointsLayer.getObjects().get("spawn").getProperties();
         Vector2 spawnPoint = new Vector2(spawnProps.get("x", Integer.class) / UNITS_IN_GRID,
@@ -42,6 +47,7 @@ public class LevelLoader {
                                         exitProps.get("y", Integer.class) / UNITS_IN_GRID);
 
 
+        System.out.println("Loading balloons");
         MapLayer balloonsLayer = map.getLayers().get("balloons");
         List<Vector2> balloons = new ArrayList<>();
         for (MapObject obj : balloonsLayer.getObjects()) {
