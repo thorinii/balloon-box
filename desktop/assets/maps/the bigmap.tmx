@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="bricks" tilewidth="32" tileheight="32">
+  <image source="../wall/bricks.png" width="150" height="50"/>
+ </tileset>
+ <layer name="bricks" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2tGKgzAUANH2/3+6lFIoYtLcm8QMcQ74stSsOhq19PEQzbOyzBizZ7mD2n5mj0/m+P37vD3a1j079vbIG7WfvfOLPT5m7Wd0rov02Pm+Q9jelm049hg5Nklpe68651rHunOP1vO1t0/2uO7eY8R1UFpv1DV2lx5f2eskM27vOKVt3eF+/kXvsfp/XC1yzrWOd8X5uWOLt+gz5+/fVs0Ru7Z4m/FOPdou94YWmfloxNi7vmePcNzn2rtiZsxZzwy7aj1/I+PZI2/29yD2iBk1T0fmOXuUjbh31ta1R0zv88y/dewRE3n2zDyT2oPFHiz2YLEHiz1Y7MFiDxZ7sNiDxR4s9mCxB4s9WOzBYg8We7DYg8UeLPZgsQeLPVjswWIPFnuw2IPl7Ddz9ljH64PFHiz2YLEHiz1Y7MFiDxZ7sNiDxR4s9mCxB4s9WOzBYg8We7DYg8UeLPZgsQeLPVjswWIPFnuw2IPFHiz2YLEHiz1Yzn7bbo91vD5Y7MFiDxZ7sNiDxR4s9mCxB4s9WOzBYg8We7Acvz/0+8S17MFiDxZ7sNiDxR4s9mCxB8uzsGgNe9S9AN96Aa8=
+  </data>
+ </layer>
+ <objectgroup name="points" width="100" height="100">
+  <object name="spawn" x="128" y="284"/>
+  <object name="exit" x="1213" y="475"/>
+ </objectgroup>
+ <objectgroup name="balloons" width="100" height="100">
+  <object x="318" y="156"/>
+  <object x="381" y="160"/>
+  <object x="449" y="157"/>
+  <object x="545" y="193"/>
+  <object x="674" y="220"/>
+  <object x="1024" y="189"/>
+  <object x="192" y="416"/>
+  <object x="381" y="323"/>
+  <object x="480" y="385"/>
+  <object x="322" y="480"/>
+  <object x="323" y="640"/>
+  <object x="387" y="634"/>
+  <object x="387" y="640"/>
+  <object x="385" y="641"/>
+  <object x="510" y="638"/>
+  <object x="576" y="637"/>
+  <object x="499" y="638"/>
+  <object x="670" y="542"/>
+  <object x="896" y="384"/>
+  <object x="989" y="384"/>
+  <object x="1088" y="384"/>
+  <object x="1537" y="320"/>
+  <object x="1600" y="281"/>
+  <object x="913" y="237"/>
+ </objectgroup>
+</map>

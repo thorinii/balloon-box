@@ -18,14 +18,14 @@ import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
  */
 public class LevelLoader {
 
-    private static final float UNITS_IN_GRID = 32f;
+    //private static final float UNITS_IN_GRID = 32f;
 
     public Level loadLevel(String mapName) {
         System.out.println("Loading level " + mapName + "...");
 
         TiledMap map = new TmxMapLoader().load("maps/" + mapName + ".tmx");
         TiledMapTileLayer brickLayer = (TiledMapTileLayer) map.getLayers().get("bricks");
-
+        final float UNITS_IN_GRID = brickLayer.getTileHeight();
 
         System.out.println("Collecting bricks...");
         boolean[][] brickMap = new boolean[brickLayer.getWidth()][brickLayer.getHeight()];

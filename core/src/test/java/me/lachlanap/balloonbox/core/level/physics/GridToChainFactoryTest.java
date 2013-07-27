@@ -6,6 +6,8 @@ import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import org.junit.Before;
+import org.junit.Ignore;
 
 /**
  *
@@ -14,6 +16,24 @@ import static org.hamcrest.CoreMatchers.*;
 public class GridToChainFactoryTest {
 
     public GridToChainFactoryTest() {
+    }
+
+    @Before
+    public void before() {
+        GridToChainFactory.DEBUG = false;
+    }
+
+    @Test
+    public void testMatch() {
+        int[][] grid = new int[2][2];
+        grid[0][0] = 1;
+        grid[1][0] = 1;
+        grid[0][1] = 0;
+        grid[1][1] = 1;
+
+        assertTrue(GridToChainFactory.m(grid, 1, 1,
+                                        1, 1,
+                                        0, 1));
     }
 
     @Test
@@ -62,6 +82,7 @@ public class GridToChainFactoryTest {
 
     @Test
     public void testTwoXSquares() {
+
         boolean[][] grid = new boolean[3][3];
 
         grid[0][0] = true;
@@ -103,28 +124,61 @@ public class GridToChainFactoryTest {
     }
 
     @Test
-    public void testTwoDiags() {
+    public void testDiag1() {
         String[] gridDef = {
             " x",
             "x "
         };
 
-        String[] path = {
-            " 1 ",
-            "32 ",
-            "45 "
+        String[] path1 = {
+            " 14",
+            " 23",
+            "   "
         };
-        
+
+        String[] path2 = {
+            "   ",
+            "14 ",
+            "23 "
+        };
+
         boolean[][] grid = gridFromPattern(gridDef);
 
         List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
-        assertThat("Didn't get 1 chain", chains.size(), is(2));
+        assertThat("Didn't get 2 chains", chains.size(), is(2));
 
-        List<Vector2> chain = chains.get(0);
-        assertThat(chain, is(pathFromPattern(path)));
+        assertThat(chains.get(0), is(pathFromPattern(path1)));
+        assertThat(chains.get(1), is(pathFromPattern(path2)));
     }
 
     @Test
+    public void testDiag2() {
+        String[] gridDef = {
+            "x ",
+            " x"
+        };
+
+        String[] path1 = {
+            "14 ",
+            "23 ",
+            "   "
+        };
+
+        String[] path2 = {
+            "   ",
+            " 14",
+            " 23",};
+
+        boolean[][] grid = gridFromPattern(gridDef);
+
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
+        assertThat("Didn't get 2 chains", chains.size(), is(2));
+
+        assertThat(chains.get(0), is(pathFromPattern(path1)));
+        assertThat(chains.get(1), is(pathFromPattern(path2)));
+    }
+
+    @Ignore
     public void testTwoChains() {
         String[] gridDef = {
             "x x ",
@@ -172,7 +226,7 @@ public class GridToChainFactoryTest {
         assertThat("Didn't get 1 chain", chains.size(), is(1));
 
         List<Vector2> chain = chains.get(0);
-        assertThat("Chain doesn't have 28 points", chain.size(), is(28));
+        assertThat("Chain doesn't have 28 points " + chain, chain.size(), is(28));
 
         assertThat(chain.get(0), is(new Vector2(0, 0)));
         assertThat(chain.get(1), is(new Vector2(0, 1)));
@@ -207,29 +261,55 @@ public class GridToChainFactoryTest {
     @Test
     public void testComplex2() {
         String[] gridDef = {
-            "  xxx",
-            "xx  x",
-            "x   x",
-            "x   x"
+            "     xxx",
+            "  xxx  x",
+            "xx     x",
+            "x      x"
         };
 
-        String[] path = {
-            "  1   ",
-            "432   ",
-            "5ab   ",
-            "69    ",
-            "78    "
+        String[] path1 = {
+            "     1edc",
+            "     234b",
+            "       5a",
+            "       69",
+            "       78"
         };
 
         boolean[][] grid = gridFromPattern(gridDef);
 
 
         List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
-        assertThat("Didn't get 1 chain", chains.size(), is(1));
+        assertThat("Didn't get 3 chain", chains.size(), is(3));
 
         List<Vector2> chain = chains.get(0);
-        //assertThat("Chain doesn't have 4 points", chain.size(), is(16));
-        assertThat(chain, is(pathFromPattern(path)));
+        assertThat(chain, is(pathFromPattern(path1)));
+    }
+
+    @Test
+    public void testComplex3() {
+        String[] gridDef = {
+            "   x    ",
+            "   x    ",
+            " xxx    ",
+            " x      "
+        };
+
+        String[] path1 = {
+            "   1e    ",
+            "   2d    ",
+            " 543c    ",
+            " 69ab    ",
+            " 78      "
+        };
+
+        boolean[][] grid = gridFromPattern(gridDef);
+
+
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
+        assertThat(chains.size(), is(1));
+
+        List<Vector2> chain = chains.get(0);
+        assertThat(chain, is(pathFromPattern(path1)));
     }
 
     private static boolean[][] gridFromPattern(String[] pattern) {

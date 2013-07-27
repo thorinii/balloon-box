@@ -97,7 +97,7 @@ public class LevelScreen implements Screen {
 
         for (int i = 0; i < brickMap.length; i++) {
             for (int j = brickMap[0].length - 1; j >= 0; j--) {
-                if (!brickMap[i][ brickMap[0].length - j - 1])
+                if (!brickMap[i][j])
                     continue;
                 //if (i * PIXELS_IN_A_METRE > viewportCentre.x)
                 //    continue;

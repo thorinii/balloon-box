@@ -15,6 +15,7 @@ import java.util.Set;
  */
 public class GridToChainFactory {
 
+    public static boolean DEBUG = false;
     private static final int G_EMPTY = 0;
     private static final int G_FILLED = 1;
     private static final int G_USED = 2;
@@ -37,6 +38,7 @@ public class GridToChainFactory {
             chains.add(chain);
         }
 
+        System.out.println(chains.size() + " chains.");
         return chains.toArray(new ChainShape[chains.size()]);
     }
 
@@ -63,56 +65,221 @@ public class GridToChainFactory {
         List<Vector2> chainPoints = new ArrayList<>();
         Set<Vector2> circularFilter = new HashSet<>();
 
+        final Vector2 vel = new Vector2();
+
         // Process the grid
         // Start by finding a filled cell
-        for (int i = 0; i < working.length; i++) {
-            for (int j = 0; j < working[i].length; j++) {
-                if (working[i][j] == G_FILLED) {
-                    Vector2 p = new Vector2(i, j);
+        try {
+            for (int j = 0; j < H; j++) {
+                for (int i = 0; i < W; i++) {
+                    if (working[i][j] == G_FILLED) {
+                        Vector2 p = new Vector2(i, j);
+                        vel.set(0, 1);
 
-                    // Once we've found such a cell, walk along the edge of it
-                    // until we get to the start
-                    do {
-                        Vector2 cpy = p.cpy();
-                        chainPoints.add(cpy);
-                        if (!circularFilter.add(cpy))
-                            throw new IllegalStateException(
-                                    "Detected Circular Dependency at + " + p);
+                        // Once we've found such a cell, walk along the edge of it
+                        // until we get to the start
+                        do {
+                            Vector2 cpy = p.cpy();
+                            chainPoints.add(cpy);
+                            if (!circularFilter.add(cpy))
+                                throw new IllegalStateException(
+                                        "Detected Circle at + " + p + " chain so far:\n" + chainPoints);
 
-                        if (sg(working, p.x, p.y) == G_FILLED
-                                && sg(working, p.x - 1, p.y) != G_FILLED) {
-                            p.y++;
-                        } else if (sg(working, p.x, p.y - 1) == G_FILLED
-                                && sg(working, p.x, p.y) != G_FILLED) {
-                            p.x++;
-                        } else if (sg(working, p.x - 1, p.y - 1) == G_FILLED
-                                && sg(working, p.x, p.y - 1) != G_FILLED) {
-                            p.y--;
-                        } else if (sg(working, p.x - 1, p.y) == G_FILLED
-                                && sg(working, p.x - 1, p.y - 1) != G_FILLED
-                                && sg(working, p.x, p.y - 1) != G_FILLED) {
-                            p.x--;
-                        } else
-                            break;
-                    } while (!(p.x == i && p.y == j));
+                            // Do lots of complicated matching...
+                            if (vel.x >= 1) {
+                                if (DEBUG)
+                                    System.out.println("Going RIGHT");
+                                if (m(working, p.x, p.y,
+                                      1, 0,
+                                      0, 0)
+                                        || m(working, p.x, p.y,
+                                             0, 1,
+                                             1, 1)
+                                        || m(working, p.x, p.y,
+                                             1, 0,
+                                             0, 1)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go UP");
+                                    vel.set(0, -1);
+                                } else if (m(working, p.x, p.y,
+                                             0, 1,
+                                             1, 0)
+                                        || m(working, p.x, p.y,
+                                             1, 1,
+                                             0, 1)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go DOWN");
+                                    vel.set(0, 1);
+                                } else {
+                                }
+                                // ...
+                            } else if (vel.x <= -1) {
+                                if (DEBUG)
+                                    System.out.println("Going LEFT");
 
-                    // Then mark that section unwalkable
-                    setUsed(working, i, j);
+                                if (m(working, p.x, p.y,
+                                      0, 1,
+                                      0, 0)
+                                        || m(working, p.x, p.y,
+                                             0, 1,
+                                             1, 0)
+                                        || m(working, p.x, p.y,
+                                             1, 0,
+                                             1, 1)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go UP");
+                                    vel.set(0, -1);
+                                } else if (m(working, p.x, p.y,
+                                      0, 0,
+                                      0, 1)
+                                        || m(working, p.x, p.y,
+                                             1, 0,
+                                             0, 1)
+                                        || m(working, p.x, p.y,
+                                             1, 1,
+                                             1, 0)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go DOWN");
+                                    vel.set(0, 1);
+                                } else {
+                                }
+                                // ...
+                            } else if (vel.y >= 1) {
+                                if (DEBUG)
+                                    System.out.println("Going DOWN");
 
-                    // Obviously you can't have a path around a square with less than
-                    // 4 points
-                    if (chainPoints.size() < 4)
-                        continue;
+                                if (m(working, p.x, p.y,
+                                      0, 1,
+                                      0, 0)
+                                        || m(working, p.x, p.y,
+                                             0, 1,
+                                             1, 0)
+                                        || m(working, p.x, p.y,
+                                             1, 0,
+                                             1, 1)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go RIGHT");
+                                    vel.set(1, 0);
+                                } else if (m(working, p.x, p.y,
+                                             1,0,
+                                             0, 0)
+                                        || m(working, p.x, p.y,
+                                             1, 0,
+                                             0, 1)
+                                        || m(working, p.x, p.y,
+                                             0, 1,
+                                             1, 1)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go LEFT");
+                                    vel.set(-1, 0);
+                                } else {
+                                }
+                            } else if (vel.y <= -1) {
+                                if (DEBUG)
+                                    System.out.println("Going UP");
+
+                                if (m(working, p.x, p.y,
+                                      0, 0,
+                                      1, 0)
+                                        || m(working, p.x, p.y,
+                                             0, 1,
+                                             1, 0)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go LEFT");
+                                    vel.set(-1, 0);
+                                } else if (m(working, p.x, p.y,
+                                             0, 0,
+                                             0, 1)
+                                        || m(working, p.x, p.y,
+                                             1, 0,
+                                             0, 1)
+                                        || m(working, p.x, p.y,
+                                             1, 1,
+                                             1, 0)) {
+                                    if (DEBUG)
+                                        System.out.println(" -> Go RIGHT");
+                                    vel.set(1, 0);
+                                } else {
+                                }
+                                // ...
+                            } else {
+                                throw new IllegalStateException("Velocity is corrupted " + vel);
+                            }
+
+                            if (DEBUG)
+                                System.out.println("--v=" + vel);
+
+                            p.add(vel);
+                        } while (!(p.x == i && p.y == j));
+
+                        // Then mark that section unwalkable
+                        setUsed(working, i, j);
+
+                        // Obviously you can't have a path around a square with less than
+                        // 4 points
+                        if (chainPoints.size() < 4) {
+                            System.out.println(chainPoints);
+                            continue;
+                        }
 
 
-                    chains.add(chainPoints);
-                    chainPoints = new ArrayList<>();
-                    circularFilter = new HashSet<>();
+                        chains.add(chainPoints);
+                        chainPoints = new ArrayList<>();
+                        circularFilter = new HashSet<>();
+                    }
                 }
             }
+        } catch(Exception e) {
+            System.err.println("Crash: " + chainPoints);
+            throw e;
         }
 
         return chains;
+    }
+
+    /**
+     * A 'safe' match.
+     * ab
+     * cd
+     */
+    public static boolean m(int[][] g, float x, float y, int a, int b, int c, int d) {
+        if (DEBUG) {
+            System.out.println("Matching: Found:");
+            System.out.println(" " + a + b + "        " + sg(g, x - 1, y - 1) + sg(g, x, y - 1));
+            System.out.println(" " + c + d + "        " + sg(g, x - 1, y) + sg(g, x, y));
+        }
+
+        int p1, p2, p3, p4;
+        p1 = sg(g, x - 1, y - 1);
+        p2 = sg(g, x, y - 1);
+        p3 = sg(g, x - 1, y);
+        p4 = sg(g, x, y);
+
+        if (p1 != 1 && p2 != 1 && p3 != 1 && p4 != 1)
+            throw new IllegalStateException("Cannot match middle of nowhere: " + x + "," + y);
+
+        boolean matches = true;
+        if (a == 0)
+            matches = matches && p1 != G_FILLED;
+        else if (a == 1)
+            matches = matches && p1 == G_FILLED;
+
+        if (b == 0)
+            matches = matches && p2 != G_FILLED;
+        else if (b == 1)
+            matches = matches && p2 == G_FILLED;
+
+        if (c == 0)
+            matches = matches && p3 != G_FILLED;
+        else if (c == 1)
+            matches = matches && p3 == G_FILLED;
+
+        if (d == 0)
+            matches = matches && p4 != G_FILLED;
+        else if (d == 1)
+            matches = matches && p4 == G_FILLED;
+
+        return matches;
     }
 
     /**

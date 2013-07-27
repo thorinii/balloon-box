@@ -20,7 +20,7 @@ public class BalloonBoxGame extends Game {
     @Override
     public void create() {
         LevelLoader loader = new LevelLoader();
-        Level level = loader.loadLevel("williamsmap");
+        Level level = loader.loadLevel("the bigmap");
 
         setScreen(new LevelScreen(level));
     }
