@@ -1,11 +1,8 @@
 package me.lachlanap.balloonbox.core.screen.level;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import java.text.NumberFormat;
@@ -13,31 +10,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import me.lachlanap.balloonbox.core.BalloonBoxGame;
 import me.lachlanap.balloonbox.core.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.PerformanceMonitor.StopWatch;
+import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 import me.lachlanap.balloonbox.core.level.Score;
+import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 
 /**
  *
  * @author lachlan
  */
-public class LevelScreen implements Screen {
+public class LevelScreen extends AbstractScreen {
 
     public static final float PIXELS_IN_A_METRE = 240f;
     private final Level level;
     private final PerformanceMonitor performanceMonitor;
     private final Viewport viewport;
-    private final SpriteBatch batch;
-    private final ShapeRenderer shapeRenderer;
     private final TextureBook textureBook;
-    private final BitmapFont font;
     private float timeSinceLastUpdate;
+    private float activeTime;
 
-    public LevelScreen(Level level) {
+    public LevelScreen(BalloonBoxGame game, Level level) {
+        super(game);
         this.level = level;
 
         performanceMonitor = new PerformanceMonitor();
@@ -45,17 +44,15 @@ public class LevelScreen implements Screen {
 
         viewport = new Viewport(new Vector2(1080, 720));
 
-        batch = new SpriteBatch();
-        shapeRenderer = new ShapeRenderer();
-
         textureBook = new TextureBook();
         textureBook.load();
 
-        font = new BitmapFont(Gdx.files.internal("font/font.fnt"), false);
+        activeTime = 0;
     }
 
     @Override
     public void render(float tpf) {
+        activeTime += tpf;
         if (timeSinceLastUpdate < 1 / 60f)
             timeSinceLastUpdate += tpf;
         else {
@@ -88,6 +85,11 @@ public class LevelScreen implements Screen {
 
         if (false)
             renderDebug(viewportCentre);
+
+        if (level.isGameover())
+            game.gotoEoLScreen(EndOfLevelInfo.fromLevel(
+                    level,
+                    activeTime));
     }
 
     private void renderBricks(Vector2 viewportCentre) {
@@ -165,7 +167,7 @@ public class LevelScreen implements Screen {
     private void renderScore() {
         Score score = level.getScore();
 
-        font.draw(batch, String.valueOf(score.getBalloons()), 1000, 680);
+        fontBig.draw(batch, String.valueOf(score.getBalloons()), 1000, 680);
     }
 
     private void renderDebug(Vector2 viewportCentre) {
@@ -212,11 +214,11 @@ public class LevelScreen implements Screen {
 
         int i = 0;
         for (StopWatch watch : stopWatches) {
-            font.draw(batch,
-                      per.format(100f * watch.avg / total) + "% : "
+            fontBig.draw(batch,
+                         per.format(100f * watch.avg / total) + "% : "
                     + time.format(1000000 * watch.time) + "us : "
                     + watch.name,
-                      10, 30 + i * 30);
+                         10, 30 + i * 30);
             i++;
         }
 

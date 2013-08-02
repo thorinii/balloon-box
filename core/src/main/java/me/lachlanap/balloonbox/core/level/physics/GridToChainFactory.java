@@ -86,9 +86,7 @@ public class GridToChainFactory {
                                         "Detected Circle at + " + p + " chain so far:\n" + chainPoints);
 
                             // Do lots of complicated matching...
-                            if (vel.x >= 1) {
-                                if (DEBUG)
-                                    System.out.println("Going RIGHT");
+                            if (vel.x >= 1) { // ->
                                 if (m(working, p.x, p.y,
                                       1, 0,
                                       0, 0)
@@ -98,8 +96,6 @@ public class GridToChainFactory {
                                         || m(working, p.x, p.y,
                                              1, 0,
                                              0, 1)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go UP");
                                     vel.set(0, -1);
                                 } else if (m(working, p.x, p.y,
                                              0, 1,
@@ -107,16 +103,11 @@ public class GridToChainFactory {
                                         || m(working, p.x, p.y,
                                              1, 1,
                                              0, 1)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go DOWN");
                                     vel.set(0, 1);
                                 } else {
                                 }
                                 // ...
-                            } else if (vel.x <= -1) {
-                                if (DEBUG)
-                                    System.out.println("Going LEFT");
-
+                            } else if (vel.x <= -1) { // <-
                                 if (m(working, p.x, p.y,
                                       0, 1,
                                       0, 0)
@@ -126,28 +117,21 @@ public class GridToChainFactory {
                                         || m(working, p.x, p.y,
                                              1, 0,
                                              1, 1)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go UP");
                                     vel.set(0, -1);
                                 } else if (m(working, p.x, p.y,
-                                      0, 0,
-                                      0, 1)
+                                             0, 0,
+                                             0, 1)
                                         || m(working, p.x, p.y,
                                              1, 0,
                                              0, 1)
                                         || m(working, p.x, p.y,
                                              1, 1,
                                              1, 0)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go DOWN");
                                     vel.set(0, 1);
                                 } else {
                                 }
                                 // ...
-                            } else if (vel.y >= 1) {
-                                if (DEBUG)
-                                    System.out.println("Going DOWN");
-
+                            } else if (vel.y >= 1) { // down
                                 if (m(working, p.x, p.y,
                                       0, 1,
                                       0, 0)
@@ -157,11 +141,9 @@ public class GridToChainFactory {
                                         || m(working, p.x, p.y,
                                              1, 0,
                                              1, 1)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go RIGHT");
                                     vel.set(1, 0);
                                 } else if (m(working, p.x, p.y,
-                                             1,0,
+                                             1, 0,
                                              0, 0)
                                         || m(working, p.x, p.y,
                                              1, 0,
@@ -169,23 +151,16 @@ public class GridToChainFactory {
                                         || m(working, p.x, p.y,
                                              0, 1,
                                              1, 1)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go LEFT");
                                     vel.set(-1, 0);
                                 } else {
                                 }
-                            } else if (vel.y <= -1) {
-                                if (DEBUG)
-                                    System.out.println("Going UP");
-
+                            } else if (vel.y <= -1) { // up
                                 if (m(working, p.x, p.y,
                                       0, 0,
                                       1, 0)
                                         || m(working, p.x, p.y,
                                              0, 1,
                                              1, 0)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go LEFT");
                                     vel.set(-1, 0);
                                 } else if (m(working, p.x, p.y,
                                              0, 0,
@@ -196,8 +171,6 @@ public class GridToChainFactory {
                                         || m(working, p.x, p.y,
                                              1, 1,
                                              1, 0)) {
-                                    if (DEBUG)
-                                        System.out.println(" -> Go RIGHT");
                                     vel.set(1, 0);
                                 } else {
                                 }
@@ -205,9 +178,6 @@ public class GridToChainFactory {
                             } else {
                                 throw new IllegalStateException("Velocity is corrupted " + vel);
                             }
-
-                            if (DEBUG)
-                                System.out.println("--v=" + vel);
 
                             p.add(vel);
                         } while (!(p.x == i && p.y == j));
@@ -218,7 +188,6 @@ public class GridToChainFactory {
                         // Obviously you can't have a path around a square with less than
                         // 4 points
                         if (chainPoints.size() < 4) {
-                            System.out.println(chainPoints);
                             continue;
                         }
 
@@ -229,7 +198,7 @@ public class GridToChainFactory {
                     }
                 }
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.err.println("Crash: " + chainPoints);
             throw e;
         }
@@ -243,12 +212,6 @@ public class GridToChainFactory {
      * cd
      */
     public static boolean m(int[][] g, float x, float y, int a, int b, int c, int d) {
-        if (DEBUG) {
-            System.out.println("Matching: Found:");
-            System.out.println(" " + a + b + "        " + sg(g, x - 1, y - 1) + sg(g, x, y - 1));
-            System.out.println(" " + c + d + "        " + sg(g, x - 1, y) + sg(g, x, y));
-        }
-
         int p1, p2, p3, p4;
         p1 = sg(g, x - 1, y - 1);
         p2 = sg(g, x, y - 1);

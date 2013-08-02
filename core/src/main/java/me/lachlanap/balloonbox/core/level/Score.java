@@ -6,13 +6,11 @@ public class Score {
     private int balloons;
     private int lives;
     private int stars;
-    private float time;
 
     public Score() {
         balloons = 0;
         lives = DEFAULT_LIVES;
         stars = 0;
-        time = 0f;
     }
 
     public void collectBalloon() {
@@ -41,9 +39,5 @@ public class Score {
 
     public int getStars() {
         return stars;
-    }
-
-    public float getTime() {
-        return time;
     }
 }

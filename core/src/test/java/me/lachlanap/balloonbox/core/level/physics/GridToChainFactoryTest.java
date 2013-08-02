@@ -312,6 +312,33 @@ public class GridToChainFactoryTest {
         assertThat(chain, is(pathFromPattern(path1)));
     }
 
+    @Test
+    public void testComplex4() {
+        String[] gridDef = {
+            "xxxx",
+            "x  x",
+            "x  x",
+            "xxxx"
+        };
+
+        String[] path1 = {
+            "1gfed",
+            "2   c",
+            "3   b",
+            "4   a",
+            "56789"
+        };
+
+        boolean[][] grid = gridFromPattern(gridDef);
+
+
+        List<List<Vector2>> chains = GridToChainFactory.makePath(grid);
+        assertThat(chains.size(), is(1));
+
+        List<Vector2> chain = chains.get(0);
+        assertThat(chain, is(pathFromPattern(path1)));
+    }
+
     private static boolean[][] gridFromPattern(String[] pattern) {
         boolean[][] grid = new boolean[pattern[0].length()][pattern.length];
 

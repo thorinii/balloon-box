@@ -21,6 +21,10 @@ public class Level {
 
     @Constant(name = "Exit Scale", constraints = "0,0.5")
     public static float EXIT_SCALE = .013f;
+    @Constant(name = "Max Exit Suction", constraints = "0,1")
+    public static float MAX_EXIT_SUCTION = 0.035f;
+    @Constant(name = " X Exit Scale", constraints = "0,1")
+    public static float X_EXIT_SCALE = 0.05f;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
     public static final float EXIT_SENSOR_HEIGHT = 2f;
     private final StaticLevelData staticLevelData;
@@ -135,12 +139,12 @@ public class Level {
 
     public void update() {
         performanceMonitor.begin("Level Update");
-        
+
         performanceMonitor.begin("Level Update - Box2D Tick");
         world.step(1 / 60f, 8, 3);
         performanceMonitor.end("Level Update - Box2D Tick");
 
-        
+
         performanceMonitor.begin("Level Update - Removing Dead");
         List<Entity> needKilling = new ArrayList<>();
         for (Entity e : entities) {
@@ -155,7 +159,7 @@ public class Level {
         entities.removeAll(needKilling);
         performanceMonitor.end("Level Update - Removing Dead");
 
-        
+
         if (!gameover && worldContactHandler.isExitFanOn()) {
             Body boxisBody = boxis.getBody();
 
@@ -163,11 +167,11 @@ public class Level {
             dist.y += 0.7;
 
             Vector2 impulse = dist.cpy();
-            impulse.x *= 0.04f;
+            impulse.x *= X_EXIT_SCALE;
             impulse.y = EXIT_SCALE;
 
-            impulse.scl(1 / dist.len());
-            impulse.y = Math.min(impulse.y, 0.035f);
+            impulse.scl(1 / dist.len2());
+            impulse.y = Math.min(impulse.y, MAX_EXIT_SUCTION);
 
             boxisBody.applyLinearImpulse(impulse, boxisBody.getPosition(), true);
 
@@ -180,7 +184,7 @@ public class Level {
                 gameover = true;
             }
         }
-        
+
         performanceMonitor.end("Level Update");
     }
 }
