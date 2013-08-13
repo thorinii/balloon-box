@@ -26,6 +26,13 @@ public class Viewport {
         return centre;
     }
 
+    public void centreOn(Entity entity) {
+        Vector2 epos = entity.getPosition();
+
+        centre.x = -epos.x * LevelScreen.PIXELS_IN_A_METRE + size.x / 2;
+        centre.y = -epos.y * LevelScreen.PIXELS_IN_A_METRE + size.y / 2;
+    }
+
     public void follow(Entity entity) {
         Vector2 epos = entity.getPosition();
 

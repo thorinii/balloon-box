@@ -43,6 +43,7 @@ public class LevelScreen extends AbstractScreen {
         level.setPerformanceMonitor(performanceMonitor);
 
         viewport = new Viewport(new Vector2(1080, 720));
+        viewport.centreOn(level.getBoxis());
 
         textureBook = new TextureBook();
         textureBook.load();
