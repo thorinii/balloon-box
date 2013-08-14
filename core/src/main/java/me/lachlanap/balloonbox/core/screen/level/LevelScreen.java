@@ -11,8 +11,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import me.lachlanap.balloonbox.core.BalloonBoxGame;
-import me.lachlanap.balloonbox.core.PerformanceMonitor;
-import me.lachlanap.balloonbox.core.PerformanceMonitor.StopWatch;
+import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
+import me.lachlanap.balloonbox.core.perf.PerformanceMonitor.StopWatch;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
@@ -35,11 +35,11 @@ public class LevelScreen extends AbstractScreen {
     private float timeSinceLastUpdate;
     private float activeTime;
 
-    public LevelScreen(BalloonBoxGame game, Level level) {
+    public LevelScreen(BalloonBoxGame game, Level level, PerformanceMonitor performanceMonitor) {
         super(game);
         this.level = level;
 
-        performanceMonitor = new PerformanceMonitor();
+        this.performanceMonitor = performanceMonitor;
         level.setPerformanceMonitor(performanceMonitor);
 
         viewport = new Viewport(new Vector2(1080, 720));
@@ -65,24 +65,26 @@ public class LevelScreen extends AbstractScreen {
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 
-        performanceMonitor.begin("Render");
+        performanceMonitor.begin("render");
 
         viewport.follow(level.getBoxis());
         Vector2 viewportCentre = viewport.getCentre();
 
-        performanceMonitor.begin("Render - Entities");
+        performanceMonitor.begin("render.entities");
         batch.begin();
         renderEntities(viewportCentre);
         batch.end();
-        performanceMonitor.end("Render - Entities");
+        performanceMonitor.end("render.entities");
 
+        performanceMonitor.begin("render.misc");
         batch.begin();
         renderPipes(viewportCentre);
         renderBricks(viewportCentre);
         renderScore();
         batch.end();
+        performanceMonitor.end("render.misc");
 
-        performanceMonitor.end("Render");
+        performanceMonitor.end("render");
 
         if (false)
             renderDebug(viewportCentre);

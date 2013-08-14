@@ -7,7 +7,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
-import me.lachlanap.balloonbox.core.PerformanceMonitor;
+import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonContactHandler;
@@ -138,14 +138,14 @@ public class Level {
     }
 
     public void update() {
-        performanceMonitor.begin("Level Update");
+        performanceMonitor.begin("update");
 
-        performanceMonitor.begin("Level Update - Box2D Tick");
+        performanceMonitor.begin("update.box2d");
         world.step(1 / 60f, 8, 3);
-        performanceMonitor.end("Level Update - Box2D Tick");
+        performanceMonitor.end("update.box2d");
 
 
-        performanceMonitor.begin("Level Update - Removing Dead");
+        performanceMonitor.begin("update.removing-dead");
         List<Entity> needKilling = new ArrayList<>();
         for (Entity e : entities) {
             e.update();
@@ -157,7 +157,7 @@ public class Level {
         }
 
         entities.removeAll(needKilling);
-        performanceMonitor.end("Level Update - Removing Dead");
+        performanceMonitor.end("update.removing-dead");
 
 
         if (!gameover && worldContactHandler.isExitFanOn()) {
@@ -185,6 +185,6 @@ public class Level {
             }
         }
 
-        performanceMonitor.end("Level Update");
+        performanceMonitor.end("update");
     }
 }

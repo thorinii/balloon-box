@@ -20,6 +20,10 @@ public class EntityFactory {
         return boxis;
     }
 
+    public static Entity makeBox(Vector2 pos) {
+        return new Entity(false, pos, BOXIS_EXTENTS, EntityType.BOXIS, true);
+    }
+
     public static Entity makeBrick(Vector2 pos) {
         return new Entity(true, pos, BRICK_EXTENTS, EntityType.BLOCK, false);
     }
