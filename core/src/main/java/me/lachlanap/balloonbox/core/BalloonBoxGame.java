@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.loader.LevelLoader;
+import me.lachlanap.balloonbox.core.perf.DevToolsWindow;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.perf.PerformanceStatViewer;
 import me.lachlanap.balloonbox.core.screen.eol.EndOfLevelScreen;
@@ -19,27 +20,16 @@ import me.lachlanap.lct.gui.LCTEditor;
 public class BalloonBoxGame extends Game {
 
     private final PerformanceMonitor performanceMonitor;
+    private final DevToolsWindow devToolsWindow;
 
     public BalloonBoxGame() {
+
         LCTManager manager = new LCTManager();
         manager.register(Level.class);
         manager.register(EndOfLevelScreen.class);
 
         performanceMonitor = new PerformanceMonitor();
-
-
-        JFrame frame = new JFrame("Balloon Box Dev Tools");
-        Container pane = frame.getContentPane();
-        pane.setLayout(new BorderLayout());
-
-        LCTEditor lctEditor = new LCTEditor(manager);
-        pane.add(lctEditor, BorderLayout.NORTH);
-
-        PerformanceStatViewer statViewer = new PerformanceStatViewer(performanceMonitor);
-        pane.add(statViewer, BorderLayout.CENTER);
-
-        frame.setSize(400, 800);
-        frame.setVisible(true);
+        devToolsWindow = new DevToolsWindow(manager, performanceMonitor);
     }
 
     @Override
@@ -59,5 +49,9 @@ public class BalloonBoxGame extends Game {
     }
 
     public void gotoMainMenu() {
+    }
+
+    public void toggleDevTools() {
+        devToolsWindow.toggleVisibility();
     }
 }

@@ -1,6 +1,7 @@
 package me.lachlanap.balloonbox.core.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -70,6 +71,10 @@ public abstract class AbstractScreen implements Screen, InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
+        if (keycode == Input.Keys.F4) {
+            game.toggleDevTools();
+        }
+
         return true;
     }
 

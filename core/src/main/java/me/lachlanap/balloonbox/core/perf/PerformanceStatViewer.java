@@ -1,6 +1,7 @@
 package me.lachlanap.balloonbox.core.perf;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -83,5 +84,10 @@ public class PerformanceStatViewer extends JPanel {
 
     private static Color invert(Color c) {
         return new Color(255 - c.getRed(), 255 - c.getGreen(), 255 - c.getBlue());
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(300, 400);
     }
 }

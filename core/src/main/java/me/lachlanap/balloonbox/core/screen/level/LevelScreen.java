@@ -1,6 +1,8 @@
 package me.lachlanap.balloonbox.core.screen.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -226,29 +228,5 @@ public class LevelScreen extends AbstractScreen {
         }
 
         batch.end();
-    }
-
-    @Override
-    public void show() {
-    }
-
-    @Override
-    public void hide() {
-    }
-
-    @Override
-    public void resize(int i, int i1) {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void dispose() {
     }
 }
