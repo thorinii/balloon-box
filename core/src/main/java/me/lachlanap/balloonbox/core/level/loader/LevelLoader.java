@@ -19,7 +19,6 @@ import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 public class LevelLoader {
 
     //private static final float UNITS_IN_GRID = 32f;
-
     public Level loadLevel(String mapName) {
         System.out.println("Loading level " + mapName + "...");
 

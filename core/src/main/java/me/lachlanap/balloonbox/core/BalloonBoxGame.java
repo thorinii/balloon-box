@@ -1,21 +1,14 @@
 package me.lachlanap.balloonbox.core;
 
 import com.badlogic.gdx.Game;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Container;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.loader.LevelLoader;
 import me.lachlanap.balloonbox.core.perf.DevToolsWindow;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
-import me.lachlanap.balloonbox.core.perf.PerformanceStatViewer;
 import me.lachlanap.balloonbox.core.screen.eol.EndOfLevelScreen;
 import me.lachlanap.balloonbox.core.screen.level.LevelScreen;
 import me.lachlanap.lct.LCTManager;
-import me.lachlanap.lct.gui.LCTEditor;
 
 public class BalloonBoxGame extends Game {
 
@@ -23,7 +16,6 @@ public class BalloonBoxGame extends Game {
     private final DevToolsWindow devToolsWindow;
 
     public BalloonBoxGame() {
-
         LCTManager manager = new LCTManager();
         manager.register(Level.class);
         manager.register(EndOfLevelScreen.class);

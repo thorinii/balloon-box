@@ -52,7 +52,7 @@ public class Box2DFactory {
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(size.x / 2f, size.y / 2f);
-        
+
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
 
