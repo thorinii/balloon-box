@@ -1,13 +1,17 @@
 package me.lachlanap.balloonbox.core.story;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import static com.google.common.base.Preconditions.*;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -15,25 +19,39 @@ import java.util.List;
 /**
  * A helper class for loading a {@link Story} from a text file.
  * Format is:
- * <p/>
+ * <br />
  * <pre>
  * (blank lines allowed)
  * # this is a comment
  * &lt;scene-type&gt; &lt;name&gt;
  * ...
  * </pre>
+ * <br />
  * <p/>
  * @author Lachlan
  */
 public class StoryLoader {
 
-    public static Story load(File rawFile) throws IOException {
-        List<String> lines = Files.readLines(rawFile, Charsets.UTF_8);
-        return load(lines);
+    public static Story load(FileHandle handle) {
+        if (handle == null)
+            throw new StoryLoadingException("Could not find file referenced by handle");
+        return load(handle.read());
     }
 
-    public static Story load(String raw) {
-        return load(raw.split("\n"));
+    public static Story load(InputStream stream) {
+        List<String> lines = new ArrayList<>();
+
+        try (
+                InputStreamReader isr = new InputStreamReader(stream);
+                BufferedReader br = new BufferedReader(isr)) {
+            String line;
+            while ((line = br.readLine()) != null)
+                lines.add(line);
+        } catch (IOException ioe) {
+            throw new StoryLoadingException("Error reading story file", ioe);
+        }
+
+        return load(lines);
     }
 
     public static Story load(String[] raw) {
@@ -56,10 +74,10 @@ public class StoryLoader {
         });
 
         checkArgument(Iterables.size(raw) > 0, "Cannot have empty definition");
-        return loadSafe(raw);
+        return _load(raw);
     }
 
-    private static Story loadSafe(Iterable<String> raw) {
+    private static Story _load(Iterable<String> raw) {
         List<Scene> scenes = new ArrayList<>();
 
         for (String line : raw)
@@ -80,7 +98,10 @@ public class StoryLoader {
             case "cinematic":
                 return new CinematicScene(line.substring(firstSpace + 1).trim());
             default:
-                throw new IllegalArgumentException("Invalid scene type: " + sceneType);
+                throw new StoryLoadingException("Invalid scene type: " + sceneType);
         }
+    }
+
+    private StoryLoader() {
     }
 }

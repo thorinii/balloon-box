@@ -1,0 +1,8 @@
+# Balloon Box Story definition
+# @author Lachlan Phillips
+#
+# Format:
+#   level|cinematic <name>
+# where <name> is the context dependant name of the scene
+
+level level1
