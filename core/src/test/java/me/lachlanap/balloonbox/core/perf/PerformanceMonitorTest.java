@@ -20,7 +20,6 @@ public class PerformanceMonitorTest {
         monitor.end("test.long.path2.timer");
 
         Node n = monitor.getTreeRoot();
-        System.out.println(n);
 
         assertEquals("", n.shortName);
         assertNotNull(n.sub("test"));

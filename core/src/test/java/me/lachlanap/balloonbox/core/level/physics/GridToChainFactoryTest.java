@@ -82,7 +82,6 @@ public class GridToChainFactoryTest {
 
     @Test
     public void testTwoXSquares() {
-
         boolean[][] grid = new boolean[3][3];
 
         grid[0][0] = true;
@@ -389,10 +388,7 @@ public class GridToChainFactoryTest {
                     grid[x][y] = c - 'A' + 36;
 
                 max = Math.max(max, grid[x][y]);
-                System.out.print(grid[x][y]);
             }
-
-            System.out.println();
         }
 
         List<Vector2> points = new ArrayList<>();
