@@ -3,17 +3,17 @@ package me.lachlanap.balloonbox.core.level.physics.impl;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.level.Score;
-import me.lachlanap.balloonbox.core.level.physics.EntityContantHandler;
+import me.lachlanap.balloonbox.core.level.physics.EntityCollisionHandler;
 
 /**
  *
  * @author lachlan
  */
-public class BalloonContactHandler implements EntityContantHandler {
+public class BalloonCollisionHandler implements EntityCollisionHandler {
 
     private final Score score;
 
-    public BalloonContactHandler(Score score) {
+    public BalloonCollisionHandler(Score score) {
         this.score = score;
     }
 

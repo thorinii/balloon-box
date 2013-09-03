@@ -1,6 +1,5 @@
 package me.lachlanap.balloonbox.core.level.physics;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
@@ -19,7 +18,7 @@ import me.lachlanap.balloonbox.core.level.Level;
 public class WorldContactHandler implements ContactListener {
 
     private final Level level;
-    private final List<EntityContantHandler> handlers = new ArrayList<>();
+    private final List<EntityCollisionHandler> handlers = new ArrayList<>();
     private Body exitFanSensorBody;
     private boolean exitFanOn;
 
@@ -27,7 +26,7 @@ public class WorldContactHandler implements ContactListener {
         this.level = level;
     }
 
-    public void addContactHandler(EntityContantHandler handler) {
+    public void addContactHandler(EntityCollisionHandler handler) {
         handlers.add(handler);
     }
 
@@ -49,7 +48,7 @@ public class WorldContactHandler implements ContactListener {
         }
 
         if (a != null && b != null && !a.isMarkedForKill() && !b.isMarkedForKill())
-            for (EntityContantHandler handler : handlers)
+            for (EntityCollisionHandler handler : handlers)
                 handler.handleContact(a, b);
 
         Body boxisBody = level.getBoxis().getBody();

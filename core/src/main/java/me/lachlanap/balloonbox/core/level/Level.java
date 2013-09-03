@@ -10,7 +10,7 @@ import java.util.List;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
-import me.lachlanap.balloonbox.core.level.physics.impl.BalloonContactHandler;
+import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
 import me.lachlanap.lct.Constant;
 
 /**
@@ -82,7 +82,7 @@ public class Level {
         Box2DFactory.createLevelGeometry(world, staticLevelData);
 
         world.setContactListener(worldContactHandler);
-        worldContactHandler.addContactHandler(new BalloonContactHandler(score));
+        worldContactHandler.addContactHandler(new BalloonCollisionHandler(score));
 
 
         /* Add an exit sensor */
