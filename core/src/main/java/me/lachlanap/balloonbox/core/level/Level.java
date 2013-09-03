@@ -12,6 +12,8 @@ import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 import me.lachlanap.balloonbox.core.level.physics.DelegatingContactListener;
 import me.lachlanap.balloonbox.core.level.physics.EntityCollisionContactHandler;
 import me.lachlanap.balloonbox.core.level.physics.OnGroundContactHandler;
+import me.lachlanap.balloonbox.core.level.physics.SensorManager;
+import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
 import me.lachlanap.lct.Constant;
 
@@ -29,11 +31,14 @@ public class Level {
     public static float X_EXIT_SCALE = 0.05f;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
     public static final float EXIT_SENSOR_HEIGHT = 2f;
+    //
     private final StaticLevelData staticLevelData;
     private final List<Entity> entities;
     private final Score score;
     private final World world;
-    private final EntityCollisionContactHandler entityCollisionContactHandler;
+    private final SensorManager sensorManager;
+    private final Sensor exitFanSensor;
+    //
     private PerformanceMonitor performanceMonitor = null;
     private boolean gameover;
     private Entity boxis;
@@ -70,7 +75,13 @@ public class Level {
         this.staticLevelData = staticLevelData;
 
         world = new World(gravity, true);
-        entityCollisionContactHandler = new EntityCollisionContactHandler(this);
+
+        sensorManager = new SensorManager(this);
+        exitFanSensor = sensorManager.createSensor("exit-fan",
+                                                   staticLevelData.exitPoint,
+                                                   Box2DFactory.createBox(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2,
+                                                                          0, EXIT_SENSOR_HEIGHT / 2));
+
         setupWorld();
 
 
@@ -83,9 +94,12 @@ public class Level {
         System.out.println("Generating level geometry...");
         Box2DFactory.createLevelGeometry(world, staticLevelData);
 
-        world.setContactListener(new DelegatingContactListener(new OnGroundContactHandler(this),
-                                                               entityCollisionContactHandler));
+        EntityCollisionContactHandler entityCollisionContactHandler = new EntityCollisionContactHandler(this);
         entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
+
+        world.setContactListener(new DelegatingContactListener(new OnGroundContactHandler(this),
+                                                               entityCollisionContactHandler,
+                                                               sensorManager));
 
 
         /* Add an exit sensor */
@@ -147,21 +161,15 @@ public class Level {
         world.step(1 / 60f, 8, 3);
         performanceMonitor.end("update.box2d");
 
-
         performanceMonitor.begin("update.removing-dead");
-        List<Entity> needKilling = new ArrayList<>();
-        for (Entity e : entities) {
-            e.update();
-
-            if (e.isMarkedForKill()) {
-                needKilling.add(e);
-                e.detachFromWorld(world);
-            }
-        }
-
-        entities.removeAll(needKilling);
+        removeDeadEntities();
         performanceMonitor.end("update.removing-dead");
 
+        if (!gameover) {
+            doExitFan();
+        }
+
+        performanceMonitor.end("update");
 
         /*if (!gameover && worldContactHandler.isExitFanOn()) {
          Body boxisBody = boxis.getBody();
@@ -187,7 +195,47 @@ public class Level {
          gameover = true;
          }
          }*/
+    }
 
-        performanceMonitor.end("update");
+    private void removeDeadEntities() {
+        List<Entity> needKilling = new ArrayList<>();
+        for (Entity e : entities) {
+            e.update();
+
+            if (e.isMarkedForKill()) {
+                needKilling.add(e);
+                e.detachFromWorld(world);
+            }
+        }
+
+        entities.removeAll(needKilling);
+    }
+
+    private void doExitFan() {
+        for (Entity entity : exitFanSensor.getTouchingEntities()) {
+            Body b = entity.getBody();
+
+            Vector2 dist = staticLevelData.exitPoint.cpy().sub(b.getPosition());
+            dist.y += 0.7;
+
+            Vector2 impulse = dist.cpy();
+            impulse.x *= X_EXIT_SCALE;
+            impulse.y = EXIT_SCALE;
+
+            impulse.scl(1 / dist.len2());
+            impulse.y = Math.min(impulse.y, MAX_EXIT_SUCTION);
+
+            b.applyLinearImpulse(impulse, b.getPosition(), true);
+
+            if (dist.y < -0.3f) {
+                b.setType(BodyDef.BodyType.StaticBody);
+                b.setTransform(
+                        staticLevelData.exitPoint.cpy().add(0, 1f),
+                        0);
+
+                if (entity == boxis)
+                    gameover = true;
+            }
+        }
     }
 }

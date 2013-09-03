@@ -101,4 +101,16 @@ public class Box2DFactory {
 
         return body;
     }
+
+    public static Shape createBox(float x, float y) {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(x, y);
+        return shape;
+    }
+
+    public static Shape createBox(float x, float y, float cx, float cy) {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(x, y, new Vector2(cx, cy), 0);
+        return shape;
+    }
 }
