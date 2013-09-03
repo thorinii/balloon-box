@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
-import me.lachlanap.balloonbox.core.level.physics.WorldContactHandler;
+import me.lachlanap.balloonbox.core.level.physics.DelegatingContactListener;
+import me.lachlanap.balloonbox.core.level.physics.EntityCollisionContactHandler;
+import me.lachlanap.balloonbox.core.level.physics.OnGroundContactHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
 import me.lachlanap.lct.Constant;
 
@@ -31,7 +33,7 @@ public class Level {
     private final List<Entity> entities;
     private final Score score;
     private final World world;
-    private final WorldContactHandler worldContactHandler;
+    private final EntityCollisionContactHandler entityCollisionContactHandler;
     private PerformanceMonitor performanceMonitor = null;
     private boolean gameover;
     private Entity boxis;
@@ -68,7 +70,7 @@ public class Level {
         this.staticLevelData = staticLevelData;
 
         world = new World(gravity, true);
-        worldContactHandler = new WorldContactHandler(this);
+        entityCollisionContactHandler = new EntityCollisionContactHandler(this);
         setupWorld();
 
 
@@ -81,8 +83,9 @@ public class Level {
         System.out.println("Generating level geometry...");
         Box2DFactory.createLevelGeometry(world, staticLevelData);
 
-        world.setContactListener(worldContactHandler);
-        worldContactHandler.addContactHandler(new BalloonCollisionHandler(score));
+        world.setContactListener(new DelegatingContactListener(new OnGroundContactHandler(this),
+                                                               entityCollisionContactHandler));
+        entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
 
 
         /* Add an exit sensor */
@@ -90,7 +93,7 @@ public class Level {
         shape.setAsBox(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2, new Vector2(0, EXIT_SENSOR_HEIGHT / 2), 0);
 
         Body exitFanSensorBody = Box2DFactory.createSensor(world, staticLevelData.exitPoint, shape);
-        worldContactHandler.setExitFanSensor(exitFanSensorBody);
+        //worldContactHandler.setExitFanSensor(exitFanSensorBody);
 
 
         System.out.println("Generating balloons...");
@@ -160,30 +163,30 @@ public class Level {
         performanceMonitor.end("update.removing-dead");
 
 
-        if (!gameover && worldContactHandler.isExitFanOn()) {
-            Body boxisBody = boxis.getBody();
+        /*if (!gameover && worldContactHandler.isExitFanOn()) {
+         Body boxisBody = boxis.getBody();
 
-            Vector2 dist = staticLevelData.exitPoint.cpy().sub(boxisBody.getPosition());
-            dist.y += 0.7;
+         Vector2 dist = staticLevelData.exitPoint.cpy().sub(boxisBody.getPosition());
+         dist.y += 0.7;
 
-            Vector2 impulse = dist.cpy();
-            impulse.x *= X_EXIT_SCALE;
-            impulse.y = EXIT_SCALE;
+         Vector2 impulse = dist.cpy();
+         impulse.x *= X_EXIT_SCALE;
+         impulse.y = EXIT_SCALE;
 
-            impulse.scl(1 / dist.len2());
-            impulse.y = Math.min(impulse.y, MAX_EXIT_SUCTION);
+         impulse.scl(1 / dist.len2());
+         impulse.y = Math.min(impulse.y, MAX_EXIT_SUCTION);
 
-            boxisBody.applyLinearImpulse(impulse, boxisBody.getPosition(), true);
+         boxisBody.applyLinearImpulse(impulse, boxisBody.getPosition(), true);
 
-            if (dist.y < -0.3f) {
-                boxisBody.setType(BodyDef.BodyType.StaticBody);
-                boxisBody.setTransform(
-                        staticLevelData.exitPoint.cpy().add(0, 1f),
-                        0);
+         if (dist.y < -0.3f) {
+         boxisBody.setType(BodyDef.BodyType.StaticBody);
+         boxisBody.setTransform(
+         staticLevelData.exitPoint.cpy().add(0, 1f),
+         0);
 
-                gameover = true;
-            }
-        }
+         gameover = true;
+         }
+         }*/
 
         performanceMonitor.end("update");
     }
