@@ -88,6 +88,6 @@ public class PerformanceStatViewer extends JPanel {
 
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(300, 400);
+        return new Dimension(200, 400);
     }
 }

@@ -1,7 +1,9 @@
 package me.lachlanap.balloonbox.core;
 
+import me.lachlanap.balloonbox.core.lctext.BooleanConstantFieldProvider;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import java.util.logging.Logger;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.loader.LevelLoader;
@@ -17,9 +19,11 @@ import me.lachlanap.balloonbox.core.story.StoryController;
 import me.lachlanap.balloonbox.core.story.StoryListener;
 import me.lachlanap.balloonbox.core.story.StoryLoader;
 import me.lachlanap.lct.LCTManager;
+import me.lachlanap.lct.data.ConstantFieldFactory;
 
 public class BalloonBoxGame extends Game {
 
+    private static final Logger LOG = Logger.getLogger(BalloonBoxGame.class.getName());
     private final PerformanceMonitor performanceMonitor;
     private final DevToolsWindow devToolsWindow;
     private final LevelLoader loader;
@@ -28,12 +32,23 @@ public class BalloonBoxGame extends Game {
     public BalloonBoxGame() {
         loader = new LevelLoader();
 
-        LCTManager manager = new LCTManager();
-        manager.register(Level.class);
-        manager.register(EndOfLevelScreen.class);
+        LCTManager manager = setupLCTManager();
 
         performanceMonitor = new PerformanceMonitor();
         devToolsWindow = new DevToolsWindow(manager, performanceMonitor);
+    }
+
+    private LCTManager setupLCTManager() {
+        ConstantFieldFactory cff = new ConstantFieldFactory();
+        cff.addProvider(new BooleanConstantFieldProvider());
+
+        LCTManager manager = new LCTManager(cff);
+
+        manager.register(Level.class);
+        manager.register(LevelScreen.class);
+        manager.register(EndOfLevelScreen.class);
+
+        return manager;
     }
 
     @Override
@@ -70,6 +85,8 @@ public class BalloonBoxGame extends Game {
 
         @Override
         public void advanceScene(Scene next) {
+            LOG.log(java.util.logging.Level.INFO, "Going to next scene: {0}", next);
+
             if (next instanceof LevelScene) {
                 LevelScene levelScene = (LevelScene) next;
 
@@ -81,6 +98,8 @@ public class BalloonBoxGame extends Game {
 
         @Override
         public void end() {
+            LOG.log(java.util.logging.Level.INFO, "Finished game");
+
             gotoMainMenu();
         }
     }

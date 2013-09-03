@@ -4,12 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import me.lachlanap.balloonbox.core.lctext.BooleanConstantField;
+import me.lachlanap.balloonbox.core.lctext.BooleanEditor;
 import me.lachlanap.lct.LCTManager;
+import me.lachlanap.lct.gui.ConstantEditorFactory;
 import me.lachlanap.lct.gui.LCTEditor;
 
 /**
@@ -40,14 +44,17 @@ public class DevToolsWindow {
 
         JPanel pane = new JPanel();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
-        JScrollPane scrollPane = new JScrollPane(pane,
-                                                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        root.add(scrollPane, BorderLayout.CENTER);
+        root.add(pane, BorderLayout.CENTER);
 
 
-        LCTEditor lctEditor = new LCTEditor(lctManager);
+        ConstantEditorFactory cef = new ConstantEditorFactory();
+        cef.addEditor(BooleanConstantField.class, BooleanEditor.class);
+
+        LCTEditor lctEditor = new LCTEditor(lctManager, cef);
         pane.add(wrap(lctEditor, "Live Constant Tweaker"));
+
+        LogMonitor logMonitor = new LogMonitor();
+        pane.add(wrap(logMonitor, "Log Monitor"));
 
         PerformanceStatViewer statViewer = new PerformanceStatViewer(performanceMonitor);
         pane.add(wrap(statViewer, "Performance Stats"));

@@ -22,6 +22,7 @@ import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 import me.lachlanap.balloonbox.core.level.Score;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
+import me.lachlanap.lct.Constant;
 
 /**
  *
@@ -30,6 +31,8 @@ import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 public class LevelScreen extends AbstractScreen {
 
     public static final float PIXELS_IN_A_METRE = 240f;
+    @Constant(name = "Debug")
+    public static boolean DEBUG = false;
     private final Level level;
     private final PerformanceMonitor performanceMonitor;
     private final Viewport viewport;
@@ -88,7 +91,7 @@ public class LevelScreen extends AbstractScreen {
 
         performanceMonitor.end("render");
 
-        if (false)
+        if (DEBUG)
             renderDebug(viewportCentre);
 
         if (level.isGameover())
@@ -190,43 +193,5 @@ public class LevelScreen extends AbstractScreen {
         }
 
         shapeRenderer.end();
-
-
-        List<StopWatch> stopWatches = new ArrayList<>(performanceMonitor.getData());
-        Collections.sort(stopWatches, new Comparator<StopWatch>() {
-            @Override
-            public int compare(StopWatch o1, StopWatch o2) {
-                return o1.name.compareTo(o2.name);
-            }
-        });
-
-
-        batch.begin();
-
-        float total = 0;
-        for (StopWatch watch : stopWatches) {
-            total += watch.avg;
-        }
-
-        NumberFormat per = NumberFormat.getNumberInstance();
-        per.setMinimumIntegerDigits(2);
-        per.setMinimumFractionDigits(1);
-        per.setMaximumFractionDigits(1);
-        NumberFormat time = NumberFormat.getNumberInstance();
-        time.setMinimumIntegerDigits(4);
-        time.setMinimumFractionDigits(0);
-        time.setMaximumFractionDigits(0);
-
-        int i = 0;
-        for (StopWatch watch : stopWatches) {
-            fontBig.draw(batch,
-                         per.format(100f * watch.avg / total) + "% : "
-                    + time.format(1000000 * watch.time) + "us : "
-                    + watch.name,
-                         10, 30 + i * 30);
-            i++;
-        }
-
-        batch.end();
     }
 }
