@@ -7,6 +7,7 @@ import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.loader.LevelLoader;
 import me.lachlanap.balloonbox.core.perf.DevToolsWindow;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
+import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 import me.lachlanap.balloonbox.core.screen.eol.EndOfLevelScreen;
 import me.lachlanap.balloonbox.core.screen.level.LevelScreen;
 import me.lachlanap.balloonbox.core.story.LevelScene;
@@ -52,7 +53,8 @@ public class BalloonBoxGame extends Game {
 
     public void gotoMainMenu() {
         System.out.println("Going to MainMenu");
-        setScreen(null);
+        setScreen(new AbstractScreen(this) {
+        });
     }
 
     public void toggleDevTools() {
