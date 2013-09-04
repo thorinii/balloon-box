@@ -36,10 +36,6 @@ public class SensorManager implements ContactListener {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(extents.x, extents.y);
 
-        return createSensor(name, centre, shape);
-    }
-
-    public Sensor createSensor(String name, Vector2 centre, Shape shape) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(centre);
@@ -54,10 +50,14 @@ public class SensorManager implements ContactListener {
         Fixture fixture = body.createFixture(fixtureDef);
 
 
-        Sensor sensor = new Sensor(name);
+        Sensor sensor = new Sensor(name, centre, extents);
         fixture2Sensor.put(fixture, sensor);
 
         return sensor;
+    }
+
+    public List<Sensor> getSensors() {
+        return new ArrayList<>(fixture2Sensor.values());
     }
 
     @Override
@@ -128,10 +128,13 @@ public class SensorManager implements ContactListener {
     public class Sensor {
 
         private final String name;
+        private final Vector2 position, extents;
         private final List<Entity> touchingEntities;
 
-        private Sensor(String name) {
+        private Sensor(String name, Vector2 centre, Vector2 extents) {
             this.name = name;
+            this.position = centre;
+            this.extents = extents;
             touchingEntities = new ArrayList<>();
         }
 
@@ -146,6 +149,14 @@ public class SensorManager implements ContactListener {
 
         public String getName() {
             return name;
+        }
+
+        public Vector2 getPosition() {
+            return position;
+        }
+
+        public Vector2 getExtents() {
+            return extents;
         }
 
         public List<Entity> getTouchingEntities() {

@@ -1,26 +1,19 @@
 package me.lachlanap.balloonbox.core.screen.level;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import me.lachlanap.balloonbox.core.BalloonBoxGame;
-import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
-import me.lachlanap.balloonbox.core.perf.PerformanceMonitor.StopWatch;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 import me.lachlanap.balloonbox.core.level.Score;
+import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
+import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 import me.lachlanap.lct.Constant;
 
@@ -180,8 +173,8 @@ public class LevelScreen extends AbstractScreen {
 
     private void renderDebug(Vector2 viewportCentre) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(.1f, .3f, .8f, 1);
 
+        shapeRenderer.setColor(.1f, .3f, .8f, 1);
         for (Entity e : level.getEntities()) {
             Vector2 centre = e.getPosition();
             Vector2 size = e.getSize();
@@ -191,6 +184,18 @@ public class LevelScreen extends AbstractScreen {
                                size.x * PIXELS_IN_A_METRE,
                                size.y * PIXELS_IN_A_METRE);
         }
+
+        shapeRenderer.setColor(.1f, .8f, .2f, 1);
+        for (Sensor s : level.getSensorManager().getSensors()) {
+            Vector2 centre = s.getPosition();
+            Vector2 size = s.getExtents();
+
+            shapeRenderer.rect((centre.x - size.x) * PIXELS_IN_A_METRE + viewportCentre.x,
+                               (centre.y - size.y) * PIXELS_IN_A_METRE + viewportCentre.y,
+                               size.x * 2 * PIXELS_IN_A_METRE,
+                               size.y * 2 * PIXELS_IN_A_METRE);
+        }
+
 
         shapeRenderer.end();
     }

@@ -3,10 +3,10 @@ package me.lachlanap.balloonbox.core.level;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 import me.lachlanap.balloonbox.core.level.physics.DelegatingContactListener;
@@ -23,6 +23,7 @@ import me.lachlanap.lct.Constant;
  */
 public class Level {
 
+    public static final Logger LOG = Logger.getLogger(Level.class.getName());
     @Constant(name = "Exit Scale", constraints = "0,0.5")
     public static float EXIT_SCALE = .013f;
     @Constant(name = "Max Exit Suction", constraints = "0,1")
@@ -30,7 +31,7 @@ public class Level {
     @Constant(name = " X Exit Scale", constraints = "0,1")
     public static float X_EXIT_SCALE = 0.05f;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
-    public static final float EXIT_SENSOR_HEIGHT = 2f;
+    public static final float EXIT_SENSOR_HEIGHT = 1.5f;
     //
     private final StaticLevelData staticLevelData;
     private final List<Entity> entities;
@@ -78,9 +79,8 @@ public class Level {
 
         sensorManager = new SensorManager(this);
         exitFanSensor = sensorManager.createSensor("exit-fan",
-                                                   staticLevelData.exitPoint,
-                                                   Box2DFactory.createBox(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2,
-                                                                          0, EXIT_SENSOR_HEIGHT / 2));
+                                                   staticLevelData.exitPoint.cpy().add(0, EXIT_SENSOR_HEIGHT / 2),
+                                                   new Vector2(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2));
 
         setupWorld();
 
@@ -91,7 +91,7 @@ public class Level {
     }
 
     private void setupWorld() {
-        System.out.println("Generating level geometry...");
+        LOG.info("Generating level geometry...");
         Box2DFactory.createLevelGeometry(world, staticLevelData);
 
         EntityCollisionContactHandler entityCollisionContactHandler = new EntityCollisionContactHandler(this);
@@ -102,15 +102,7 @@ public class Level {
                                                                sensorManager));
 
 
-        /* Add an exit sensor */
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2, new Vector2(0, EXIT_SENSOR_HEIGHT / 2), 0);
-
-        Body exitFanSensorBody = Box2DFactory.createSensor(world, staticLevelData.exitPoint, shape);
-        //worldContactHandler.setExitFanSensor(exitFanSensorBody);
-
-
-        System.out.println("Generating balloons...");
+        LOG.info("Generating balloons...");
         for (Vector2 balloon : staticLevelData.balloons) {
             addEntity(EntityFactory.makeBalloon(balloon));
         }
@@ -150,6 +142,10 @@ public class Level {
         return score;
     }
 
+    public SensorManager getSensorManager() {
+        return sensorManager;
+    }
+
     public boolean isGameover() {
         return gameover;
     }
@@ -170,31 +166,6 @@ public class Level {
         }
 
         performanceMonitor.end("update");
-
-        /*if (!gameover && worldContactHandler.isExitFanOn()) {
-         Body boxisBody = boxis.getBody();
-
-         Vector2 dist = staticLevelData.exitPoint.cpy().sub(boxisBody.getPosition());
-         dist.y += 0.7;
-
-         Vector2 impulse = dist.cpy();
-         impulse.x *= X_EXIT_SCALE;
-         impulse.y = EXIT_SCALE;
-
-         impulse.scl(1 / dist.len2());
-         impulse.y = Math.min(impulse.y, MAX_EXIT_SUCTION);
-
-         boxisBody.applyLinearImpulse(impulse, boxisBody.getPosition(), true);
-
-         if (dist.y < -0.3f) {
-         boxisBody.setType(BodyDef.BodyType.StaticBody);
-         boxisBody.setTransform(
-         staticLevelData.exitPoint.cpy().add(0, 1f),
-         0);
-
-         gameover = true;
-         }
-         }*/
     }
 
     private void removeDeadEntities() {
