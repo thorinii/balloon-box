@@ -23,6 +23,7 @@ public class TextureBook {
         entityTextures.put(EntityType.BOXIS, new Texture(Gdx.files.internal("box/box.png")));
         entityTextures.put(EntityType.BLOCK, new Texture(Gdx.files.internal("wall/brick.png")));
         entityTextures.put(EntityType.BALLOON, new Texture(Gdx.files.internal("balloon/balloon.png")));
+        entityTextures.put(EntityType.BATTERY, new Texture(Gdx.files.internal("battery/battery.png")));
 
         entryPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
         exitPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));

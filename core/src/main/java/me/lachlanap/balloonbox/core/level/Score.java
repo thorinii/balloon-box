@@ -5,20 +5,20 @@ public class Score {
     public static final int DEFAULT_LIVES = 3;
     private int balloons;
     private int lives;
-    private int stars;
+    private int batteries;
 
     public Score() {
         balloons = 0;
         lives = DEFAULT_LIVES;
-        stars = 0;
+        batteries = 0;
     }
 
     public void collectBalloon() {
         balloons++;
     }
 
-    public void collectStar() {
-        stars++;
+    public void collectBattery() {
+        batteries++;
     }
 
     public void collectLife() {
@@ -37,7 +37,7 @@ public class Score {
         return lives;
     }
 
-    public int getStars() {
-        return stars;
+    public int getBatteries() {
+        return batteries;
     }
 }

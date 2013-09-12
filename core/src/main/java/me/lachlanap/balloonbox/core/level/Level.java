@@ -15,6 +15,7 @@ import me.lachlanap.balloonbox.core.level.physics.OnGroundContactHandler;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
+import me.lachlanap.balloonbox.core.level.physics.impl.BatteryCollisionHandler;
 import me.lachlanap.lct.Constant;
 
 /**
@@ -96,6 +97,7 @@ public class Level {
 
         EntityCollisionContactHandler entityCollisionContactHandler = new EntityCollisionContactHandler(this);
         entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
+        entityCollisionContactHandler.addContactHandler(new BatteryCollisionHandler(score));
 
         world.setContactListener(new DelegatingContactListener(new OnGroundContactHandler(this),
                                                                entityCollisionContactHandler,
@@ -115,6 +117,8 @@ public class Level {
     public void addBoxis() {
         boxis = EntityFactory.makeBoxis(staticLevelData.spawnPoint.cpy().add(0, 1f));
         addEntity(boxis);
+
+        addEntity(EntityFactory.makeBattery(new Vector2(staticLevelData.spawnPoint.cpy().add(2, 1f))));
     }
 
     public void addEntity(Entity entity) {

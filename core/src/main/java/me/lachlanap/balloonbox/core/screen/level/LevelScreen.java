@@ -102,10 +102,6 @@ public class LevelScreen extends AbstractScreen {
             for (int j = brickMap[0].length - 1; j >= 0; j--) {
                 if (!brickMap[i][j])
                     continue;
-                //if (i * PIXELS_IN_A_METRE > viewportCentre.x)
-                //    continue;
-                //if (j * PIXELS_IN_A_METRE > viewportCentre.y)
-                //    continue;
 
                 batch.draw(texture,
                            i * PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE + viewportCentre.x,
