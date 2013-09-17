@@ -1,14 +1,11 @@
 package me.lachlanap.balloonbox.core.level.physics;
 
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.Level;
@@ -38,6 +35,9 @@ public class OnGroundContactHandler implements ContactListener {
         if (collided.size() == 2) {
             Entity a = collided.get(0);
             Entity b = collided.get(1);
+
+            if (a.isMarkedForKill() || b.isMarkedForKill())
+                return;
 
             if (a.checkGroundSensor(contact)) {
                 if (b.canJumpOn())
@@ -102,19 +102,5 @@ public class OnGroundContactHandler implements ContactListener {
                     entities.add(e);
 
         return entities;
-    }
-
-    private List<Fixture> removeEntities(List<Entity> entities, Fixture... all) {
-        List<Fixture> bodies = new ArrayList<>(Arrays.asList(all));
-
-        for (Iterator<Entity> it = entities.iterator(); it.hasNext();) {
-            Entity e = it.next();
-
-            for (Fixture f : bodies)
-                if (f.getBody() == e.getBody())
-                    it.remove();
-        }
-
-        return bodies;
     }
 }

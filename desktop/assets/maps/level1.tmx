@@ -17,4 +17,10 @@
   <object x="1280" y="640"/>
   <object x="1568" y="864"/>
  </objectgroup>
+ <objectgroup name="batteries" width="100" height="100">
+  <object x="512" y="416"/>
+  <object x="1376" y="640"/>
+  <object x="1568" y="640"/>
+  <object x="736" y="320"/>
+ </objectgroup>
 </map>

@@ -67,7 +67,7 @@ public class BalloonBoxGame extends Game {
     }
 
     public void gotoMainMenu() {
-        System.out.println("Going to MainMenu");
+        LOG.info("Going to MainMenu");
         setScreen(new AbstractScreen(this) {
         });
     }
@@ -90,7 +90,6 @@ public class BalloonBoxGame extends Game {
             if (next instanceof LevelScene) {
                 LevelScene levelScene = (LevelScene) next;
 
-                System.out.println("Going to " + levelScene.getName());
                 Level level = loader.loadLevel(levelScene.getName());
                 setScreen(new LevelScreen(BalloonBoxGame.this, level, performanceMonitor));
             }

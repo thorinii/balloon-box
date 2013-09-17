@@ -52,18 +52,23 @@ public class Level {
         public final Vector2 spawnPoint;
         public final Vector2 exitPoint;
         public final List<Vector2> balloons;
+        public final List<Vector2> batteries;
 
         public StaticLevelData(boolean[][] brickMap, Vector2 spawnPoint, Vector2 exitPoint,
-                List<Vector2> balloons) {
+                List<Vector2> balloons, List<Vector2> batteries) {
             this.brickMap = brickMap;
             this.balloons = balloons;
             this.spawnPoint = spawnPoint;
             this.exitPoint = exitPoint;
+            this.batteries = batteries;
 
             spawnPoint.scl(GRID_SCALE);
             exitPoint.scl(GRID_SCALE);
             for (Vector2 balloon : balloons) {
                 balloon.scl(GRID_SCALE);
+            }
+            for (Vector2 battery : batteries) {
+                battery.scl(GRID_SCALE);
             }
         }
     }
@@ -99,14 +104,19 @@ public class Level {
         entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
         entityCollisionContactHandler.addContactHandler(new BatteryCollisionHandler(score));
 
-        world.setContactListener(new DelegatingContactListener(new OnGroundContactHandler(this),
-                                                               entityCollisionContactHandler,
-                                                               sensorManager));
+        world.setContactListener(new DelegatingContactListener(
+                entityCollisionContactHandler,
+                new OnGroundContactHandler(this),
+                sensorManager));
 
-
-        LOG.info("Generating balloons...");
+        LOG.info("Blowing up balloons...");
         for (Vector2 balloon : staticLevelData.balloons) {
             addEntity(EntityFactory.makeBalloon(balloon));
+        }
+
+        LOG.info("Charging batteries...");
+        for (Vector2 battery : staticLevelData.batteries) {
+            addEntity(EntityFactory.makeBattery(battery));
         }
     }
 
@@ -117,8 +127,6 @@ public class Level {
     public void addBoxis() {
         boxis = EntityFactory.makeBoxis(staticLevelData.spawnPoint.cpy().add(0, 1f));
         addEntity(boxis);
-
-        addEntity(EntityFactory.makeBattery(new Vector2(staticLevelData.spawnPoint.cpy().add(2, 1f))));
     }
 
     public void addEntity(Entity entity) {
@@ -165,7 +173,7 @@ public class Level {
         removeDeadEntities();
         performanceMonitor.end("update.removing-dead");
 
-        if (!gameover) {
+        if (!gameover && score.getBatteries() >= staticLevelData.batteries.size()) {
             doExitFan();
         }
 

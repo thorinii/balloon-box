@@ -8,7 +8,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 
@@ -18,48 +20,66 @@ import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
  */
 public class LevelLoader {
 
-    //private static final float UNITS_IN_GRID = 32f;
+    private static final Logger LOG = Logger.getLogger(LevelLoader.class.getName());
+    private final TmxMapLoader tmxMapLoader = new TmxMapLoader();
+
     public Level loadLevel(String mapName) {
-        System.out.println("Loading level " + mapName + "...");
+        LOG.log(java.util.logging.Level.INFO, "Loading level {0}", mapName);
+        TiledMap map = tmxMapLoader.load("maps/" + mapName + ".tmx");
 
-        TiledMap map = new TmxMapLoader().load("maps/" + mapName + ".tmx");
+
+        LOG.info("Unpacking bricks...");
         TiledMapTileLayer brickLayer = (TiledMapTileLayer) map.getLayers().get("bricks");
-        final float UNITS_IN_GRID = brickLayer.getTileHeight();
+        final float unitsInGrid = brickLayer.getTileHeight();
+        boolean[][] brickMap = loadBricks(brickLayer);
 
-        System.out.println("Collecting bricks...");
+
+        LOG.info("Processing Point Data");
+        MapLayer pointsLayer = map.getLayers().get("points");
+        Vector2 spawnPoint = loadVector(unitsInGrid, pointsLayer, "spawn");
+        Vector2 exitPoint = loadVector(unitsInGrid, pointsLayer, "exit");
+
+        List<Vector2> balloons = loadVectors(unitsInGrid, map.getLayers().get("balloons"));
+        List<Vector2> batteries = loadVectors(unitsInGrid, map.getLayers().get("batteries"));
+
+        map.dispose();
+
+
+        StaticLevelData staticLevelData = new StaticLevelData(brickMap,
+                                                              spawnPoint, exitPoint,
+                                                              balloons, batteries);
+        return new Level(new Vector2(0, -9.81f), staticLevelData);
+    }
+
+    private boolean[][] loadBricks(TiledMapTileLayer brickLayer) {
         boolean[][] brickMap = new boolean[brickLayer.getWidth()][brickLayer.getHeight()];
         for (int i = 0; i < brickLayer.getWidth(); i++) {
             for (int j = 0; j < brickLayer.getHeight(); j++) {
                 brickMap[i][j] = brickLayer.getCell(i, j) != null;
             }
         }
+        return brickMap;
+    }
 
+    private List<Vector2> loadVectors(float unitsInGrid, MapLayer layer) {
+        List<Vector2> list = new ArrayList<>();
 
-        System.out.println("Loading points");
-        MapLayer pointsLayer = map.getLayers().get("points");
-        MapProperties spawnProps = pointsLayer.getObjects().get("spawn").getProperties();
-        Vector2 spawnPoint = new Vector2(spawnProps.get("x", Integer.class) / UNITS_IN_GRID,
-                                         spawnProps.get("y", Integer.class) / UNITS_IN_GRID);
+        if (layer == null)
+            LOG.warning("Couldn't load vectors");
+        else
+            for (MapObject obj : layer.getObjects())
+                list.add(loadVector(unitsInGrid, obj));
 
-        MapProperties exitProps = pointsLayer.getObjects().get("exit").getProperties();
-        Vector2 exitPoint = new Vector2(exitProps.get("x", Integer.class) / UNITS_IN_GRID,
-                                        exitProps.get("y", Integer.class) / UNITS_IN_GRID);
+        return list;
+    }
 
+    private Vector2 loadVector(float unitsInGrid, MapLayer layer, String objName) {
+        return loadVector(unitsInGrid, layer.getObjects().get(objName));
+    }
 
-        System.out.println("Loading balloons");
-        MapLayer balloonsLayer = map.getLayers().get("balloons");
-        List<Vector2> balloons = new ArrayList<>();
-        for (MapObject obj : balloonsLayer.getObjects()) {
-            MapProperties objProps = obj.getProperties();
-            Vector2 pos = new Vector2(objProps.get("x", Integer.class) / UNITS_IN_GRID,
-                                      objProps.get("y", Integer.class) / UNITS_IN_GRID);
-
-            balloons.add(pos);
-        }
-
-        map.dispose();
-
-        StaticLevelData staticLevelData = new StaticLevelData(brickMap, spawnPoint, exitPoint, balloons);
-        return new Level(new Vector2(0, -9.81f), staticLevelData);
+    private Vector2 loadVector(float unitsInGrid, MapObject obj) {
+        MapProperties props = obj.getProperties();
+        return new Vector2(props.get("x", Integer.class) / unitsInGrid,
+                           props.get("y", Integer.class) / unitsInGrid);
     }
 }

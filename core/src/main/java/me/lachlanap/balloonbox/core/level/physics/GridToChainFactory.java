@@ -38,7 +38,6 @@ public class GridToChainFactory {
             chains.add(chain);
         }
 
-        System.out.println(chains.size() + " chains.");
         return chains.toArray(new ChainShape[chains.size()]);
     }
 
@@ -199,7 +198,6 @@ public class GridToChainFactory {
                 }
             }
         } catch (Exception e) {
-            System.err.println("Crash: " + chainPoints);
             throw e;
         }
 
