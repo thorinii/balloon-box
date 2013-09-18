@@ -23,7 +23,7 @@ public class KeyboardController extends Controller {
 
         if (entity.isOnGround())
             if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.SPACE)) {
-                entity.shoveY(2f);
+                entity.shoveY(3.4f);
             }
         if (Gdx.input.isKeyPressed(Keys.F)) {
             entity.addForce(0, 2.7f);

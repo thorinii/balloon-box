@@ -5,7 +5,7 @@
  </tileset>
  <layer name="bricks" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2MGKAjEQBFD3/3968biLoHY6SWXmPZiDIkxMUfbExwMAAAAAAAAAAAAAgKv5mXRRI48s8sjSuYfyGCePLPLIIo8s8sgijyzyyCKPLPLIIo8s8sjS+f+UPMZ1/kcoj3GdnZDHfPqRxfzIoh9ZzI8s+pHF/MiiH1nMjyzVfnRdO834PrOud+vvkJRHip3zY/c+nJjHzN+Z3ftwYh7Vz356753S8zA/ziKP/cyP+9i9D/L4a/c+VJ8tq78XK8+LnefOVarPliPfITmLpDyqXem6Z2cWI/fZqdqPVMlr+8SqTqyQuq5vXKUfiWuqqM6PJGnrGXF6P5LW0uHk+ZGyjk6n9iNhDTOcOD9233+m2f3ozu/KWTzNmB+zzr9Xz+JptB//3/vkdXWdd1CdH6uvu6j2Qx5zJHdCHn2fpaY6P5hDP7JU5wc9RmamPHqNPs/Io0/HM6U8enR1Qh49us5csunRdR6WR5ZXey+Ptd51QR5Z5JHlrnlUZvKqCwB47RcobgOQ
+   eJzt2FGKwkAUBED3/pde/FVBzetJOrEK5kMRM6ZpnpPbDQAAAAAAAAAAAACAq/lbuPiePLrIo0v6/sljRh5d5NFFHl3k0UUeXeTRRR5d5NFFHl3k0SX9bEoeM+nng/KYSXdCHmvpRxfzo4t+dDE/uuhHF/Oji350MT+6TPqRWEdJ/47V65PfMdWSR5Mj54c8nh05P+TxTD+6mB/nJo/jmR+/QR5d2vNInNe2ft/0vJg+d66WvJdbr9uWRUsek66krpvMYnKdo0z60ap5b+/s2Yk9tO7rU1fqR+OevjWZH03a9rPVFfrRtJeps8+Pln2knLkfDXtIO+v8OPr6q+zRj3R+V83ibtX8WHX+vXIWd4l+PL73yeute726yfzYe/2CST/kkdfeCXlkP893JvODPP3oMpkfzE3npTxyEv9l5JGR+j8pj7lkJ+QxlzxvyWYueRaWR5dX914e+3rXBXl0kUeXX81jy1zeawEAr/0DbSUDkw==
   </data>
  </layer>
  <objectgroup name="points" width="100" height="100">
@@ -17,14 +17,14 @@
   <object x="736" y="3008"/>
   <object x="928" y="3008"/>
   <object x="1152" y="2656"/>
-  <object x="960" y="2592"/>
   <object x="1152" y="2272"/>
-  <object x="960" y="2208"/>
   <object x="1952" y="2016"/>
   <object x="2144" y="1856"/>
-  <object x="2336" y="1792"/>
+  <object x="2368" y="1792"/>
   <object x="2944" y="2016"/>
   <object x="2144" y="1472"/>
+  <object x="928" y="2592"/>
+  <object x="928" y="2208"/>
  </objectgroup>
  <objectgroup name="balloons" width="100" height="100">
   <object x="2208" y="2368"/>
@@ -37,6 +37,6 @@
   <object x="640" y="2976"/>
   <object x="1280" y="2976"/>
   <object x="2080" y="1312"/>
-  <object x="2336" y="1376"/>
+  <object x="2368" y="1376"/>
  </objectgroup>
 </map>
