@@ -17,7 +17,7 @@ import javax.swing.SwingUtilities;
  */
 public class LogMonitor extends JPanel {
 
-    private final Logger log = Logger.getLogger("me.lachlanap.balloonbox");
+    private final Logger LOG = Logger.getLogger("me.lachlanap.balloonbox");
     private final JTextArea logOutput;
 
     public LogMonitor() {
@@ -35,12 +35,30 @@ public class LogMonitor extends JPanel {
     }
 
     private void setupLog() throws SecurityException {
-        log.addHandler(new LogHandler());
+        LOG.addHandler(new LogHandler());
     }
 
     private class LogHandler extends Handler {
 
-        final Formatter formatter = new SimpleFormatter();
+        final Formatter formatter = new Formatter() {
+            @Override
+            public String format(LogRecord record) {
+                if (record.getThrown() == null)
+                    return record.getLevel().getLocalizedName()
+                            + " (" + record.getThreadID() + "): "
+                            + record.getMessage()
+                            + " [" + record.getMillis() + "]";
+                else {
+                    Throwable t = record.getThrown();
+                    return record.getLevel().getLocalizedName()
+                            + " (" + record.getThreadID() + "): "
+                            + t.getClass().getName() + ": "
+                            + record.getMessage() + ": "
+                            + t.getMessage()
+                            + " [" + record.getMillis() + "]";
+                }
+            }
+        };
 
         @Override
         public void publish(final LogRecord record) {
