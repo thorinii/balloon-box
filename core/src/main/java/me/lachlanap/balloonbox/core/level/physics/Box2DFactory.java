@@ -102,15 +102,42 @@ public class Box2DFactory {
         return body;
     }
 
+    public static Body createPipe(World world, Vector2 pipeBase) {
+        BodyDef def = new BodyDef();
+        def.type = BodyDef.BodyType.StaticBody;
+        def.position.set(pipeBase);
+        def.fixedRotation = true;
+        def.awake = false;
+
+        Body body = world.createBody(def);
+
+
+        FixtureDef fixtureDef = new FixtureDef();
+
+        // Top
+        fixtureDef.shape = createBox(0.25f, 0.025f, 0, 1.7f);
+        body.createFixture(fixtureDef);
+
+        // Left
+        fixtureDef.shape = createBox(0.025f, 0.42f, -0.25f, 1.25f);
+        body.createFixture(fixtureDef);
+
+        // Right
+        fixtureDef.shape = createBox(0.025f, 0.42f, 0.25f, 1.25f);
+        body.createFixture(fixtureDef);
+
+        return body;
+    }
+
     public static Shape createBox(float x, float y) {
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(x, y);
         return shape;
     }
 
-    public static Shape createBox(float x, float y, float cx, float cy) {
+    public static Shape createBox(float hx, float hy, float cx, float cy) {
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(x, y, new Vector2(cx, cy), 0);
+        shape.setAsBox(hx, hy, new Vector2(cx, cy), 0);
         return shape;
     }
 }

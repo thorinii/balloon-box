@@ -100,6 +100,9 @@ public class Level {
         LOG.info("Generating level geometry...");
         Box2DFactory.createLevelGeometry(world, staticLevelData);
 
+        Box2DFactory.createPipe(world, staticLevelData.spawnPoint);
+        Box2DFactory.createPipe(world, staticLevelData.exitPoint);
+
         EntityCollisionContactHandler entityCollisionContactHandler = new EntityCollisionContactHandler(this);
         entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
         entityCollisionContactHandler.addContactHandler(new BatteryCollisionHandler(score));
