@@ -164,6 +164,7 @@ public class LevelScreen extends AbstractScreen {
     private void renderScore() {
         Score score = level.getScore();
 
+        fontBig.draw(batch, score.getBatteries() + "/" + level.getStaticLevelData().batteries.size(), 900, 680);
         fontBig.draw(batch, String.valueOf(score.getBalloons()), 1000, 680);
     }
 
