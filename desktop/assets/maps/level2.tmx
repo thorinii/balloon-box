@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="bricks" tilewidth="32" tileheight="32">
+  <image source="../wall/brick.png" width="48" height="48"/>
+ </tileset>
+ <layer name="bricks" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2OsOgjAMBlB4/5c2/BQRO9oBjnMSE020ZPtMd5kmAAAA2DYnX9Q6Mqfz6v1ePtm817X3Po/w/8jmUV07Wm8rA3nU1s16ch6/etQVnprHmfX+5dlVKsdQXat1PyeP+jqtz7S/+vy9tbtOZlzW7XpHx9ZjTiL9Z+QsFj3Pg9U1R89icYe7KlnEnHEXIYu4lnvDbP3Md57i21xU5BJZq2XxLnIertoPjHKe6ynSo1rnURZ1evUoWeToUffQclaJnLNlcZ0R72IBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIC4FzntALc=
+  </data>
+ </layer>
+ <objectgroup name="points" width="100" height="100">
+  <object name="spawn" x="608" y="672"/>
+  <object name="exit" x="1440" y="608"/>
+ </objectgroup>
+ <objectgroup name="balloons" width="100" height="100">
+  <object x="384" y="640"/>
+  <object x="448" y="640"/>
+  <object x="864" y="480"/>
+  <object x="1152" y="288"/>
+  <object x="1248" y="288"/>
+  <object x="1376" y="288"/>
+  <object x="1504" y="288"/>
+  <object x="1600" y="288"/>
+  <object x="1728" y="288"/>
+  <object x="1856" y="288"/>
+  <object x="416" y="256"/>
+  <object x="320" y="256"/>
+  <object x="480" y="256"/>
+  <object x="576" y="256"/>
+  <object x="640" y="256"/>
+  <object x="736" y="256"/>
+  <object x="992" y="896"/>
+  <object x="1056" y="896"/>
+  <object x="1152" y="832"/>
+  <object x="1216" y="768"/>
+  <object x="1280" y="704"/>
+  <object x="1344" y="640"/>
+  <object x="1856" y="480"/>
+  <object x="1792" y="480"/>
+  <object x="1664" y="608"/>
+ </objectgroup>
+ <objectgroup name="batteries" width="100" height="100">
+  <object x="768" y="384"/>
+  <object x="864" y="288"/>
+  <object x="576" y="800"/>
+  <object x="1216" y="928"/>
+  <object x="1504" y="448"/>
+ </objectgroup>
+</map>

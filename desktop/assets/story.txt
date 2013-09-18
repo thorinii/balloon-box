@@ -6,3 +6,6 @@
 # where <name> is the context dependant name of the scene
 
 level level1
+level level2
+level level3
+
