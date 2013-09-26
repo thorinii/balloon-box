@@ -11,6 +11,7 @@ import me.lachlanap.balloonbox.core.perf.DevToolsWindow;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 import me.lachlanap.balloonbox.core.screen.eol.EndOfLevelScreen;
+import me.lachlanap.balloonbox.core.screen.level.Background;
 import me.lachlanap.balloonbox.core.screen.level.LevelScreen;
 import me.lachlanap.balloonbox.core.story.LevelScene;
 import me.lachlanap.balloonbox.core.story.Scene;
@@ -47,6 +48,7 @@ public class BalloonBoxGame extends Game {
         manager.register(Level.class);
         manager.register(LevelScreen.class);
         manager.register(EndOfLevelScreen.class);
+        manager.register(Background.class);
 
         return manager;
     }

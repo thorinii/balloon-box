@@ -30,6 +30,7 @@ public class LevelScreen extends AbstractScreen {
     private final PerformanceMonitor performanceMonitor;
     private final Viewport viewport;
     private final TextureBook textureBook;
+    private final Background background;
     private float timeSinceLastUpdate;
     private float activeTime;
 
@@ -45,6 +46,8 @@ public class LevelScreen extends AbstractScreen {
 
         textureBook = new TextureBook();
         textureBook.load();
+
+        background = new Background(textureBook, level.getStaticLevelData().spawnPoint);
 
         activeTime = 0;
     }
@@ -67,6 +70,10 @@ public class LevelScreen extends AbstractScreen {
 
         viewport.follow(level.getBoxis());
         Vector2 viewportCentre = viewport.getCentre();
+
+        batch.begin();
+        background.draw(batch, viewportCentre);
+        batch.end();
 
         performanceMonitor.begin("render.entities");
         batch.begin();
@@ -194,6 +201,27 @@ public class LevelScreen extends AbstractScreen {
         }
 
 
+        shapeRenderer.setColor(0f, 0f, 0f, 1);
+        shapeRenderer.rect(-10 + viewportCentre.x, -10 + viewportCentre.y,
+                           20, 20);
+        shapeRenderer.rect(-100 + viewportCentre.x, -100 + viewportCentre.y,
+                           200, 200);
+        shapeRenderer.rect(-200 + viewportCentre.x, -200 + viewportCentre.y,
+                           400, 400);
+        shapeRenderer.rect(-500 + viewportCentre.x, -500 + viewportCentre.y,
+                           1000, 1000);
+        shapeRenderer.rect(-1000 + viewportCentre.x, -1000 + viewportCentre.y,
+                           2000, 2000);
+
+        shapeRenderer.end();
+
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(0f, 0f, 0f, 1);
+        shapeRenderer.line(-1000 + viewportCentre.x, viewportCentre.y,
+                           1000 + viewportCentre.x, viewportCentre.y);
+        shapeRenderer.line(viewportCentre.x, -1000 + viewportCentre.y,
+                           viewportCentre.x, 1000 + viewportCentre.y);
         shapeRenderer.end();
     }
 }

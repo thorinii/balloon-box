@@ -12,8 +12,13 @@ import me.lachlanap.balloonbox.core.level.EntityType;
 public class TextureBook {
 
     private final EnumMap<EntityType, Texture> entityTextures;
+    //
     private Texture entryPipeTexture;
     private Texture exitPipeTexture;
+    //
+    private Texture background1;
+    private Texture background1Top;
+    private Texture background1Bottom;
 
     public TextureBook() {
         entityTextures = new EnumMap<>(EntityType.class);
@@ -27,6 +32,10 @@ public class TextureBook {
 
         entryPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
         exitPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
+
+        background1 = new Texture(Gdx.files.internal("backgrounds/background-1.png"));
+        background1Top = new Texture(Gdx.files.internal("backgrounds/background-1-top.png"));
+        background1Bottom = new Texture(Gdx.files.internal("backgrounds/background-1-bottom.png"));
     }
 
     public Texture getEntityTexture(EntityType type) {
@@ -39,5 +48,17 @@ public class TextureBook {
 
     public Texture getExitPipeTexture() {
         return exitPipeTexture;
+    }
+
+    public Texture getBackground1() {
+        return background1;
+    }
+
+    public Texture getBackground1Top() {
+        return background1Top;
+    }
+
+    public Texture getBackground1Bottom() {
+        return background1Bottom;
     }
 }
