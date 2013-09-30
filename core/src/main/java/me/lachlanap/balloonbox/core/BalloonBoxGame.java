@@ -3,6 +3,9 @@ package me.lachlanap.balloonbox.core;
 import me.lachlanap.balloonbox.core.lctext.BooleanConstantFieldProvider;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Logger;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Level;
@@ -11,7 +14,6 @@ import me.lachlanap.balloonbox.core.perf.DevToolsWindow;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 import me.lachlanap.balloonbox.core.screen.eol.EndOfLevelScreen;
-import me.lachlanap.balloonbox.core.screen.level.Background;
 import me.lachlanap.balloonbox.core.screen.level.LevelScreen;
 import me.lachlanap.balloonbox.core.story.LevelScene;
 import me.lachlanap.balloonbox.core.story.Scene;
@@ -19,8 +21,14 @@ import me.lachlanap.balloonbox.core.story.Story;
 import me.lachlanap.balloonbox.core.story.StoryController;
 import me.lachlanap.balloonbox.core.story.StoryListener;
 import me.lachlanap.balloonbox.core.story.StoryLoader;
+import me.lachlanap.lct.Constant;
 import me.lachlanap.lct.LCTManager;
 import me.lachlanap.lct.data.ConstantFieldFactory;
+import org.reflections.Reflections;
+import org.reflections.scanners.FieldAnnotationsScanner;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 public class BalloonBoxGame extends Game {
 
@@ -45,10 +53,17 @@ public class BalloonBoxGame extends Game {
 
         LCTManager manager = new LCTManager(cff);
 
-        manager.register(Level.class);
-        manager.register(LevelScreen.class);
-        manager.register(EndOfLevelScreen.class);
-        manager.register(Background.class);
+        /* Magic to get all the constants */
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forPackage("me.lachlanap.balloonbox.core"))
+                .setScanners(new SubTypesScanner(), new FieldAnnotationsScanner()));
+
+        Set<Field> fields = reflections.getFieldsAnnotatedWith(Constant.class);
+        Set<Class> klasses = new HashSet<>();
+        for (Field f : fields)
+            klasses.add(f.getDeclaringClass());
+        for (Class k : klasses)
+            manager.register(k);
 
         return manager;
     }

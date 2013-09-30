@@ -9,7 +9,7 @@ import me.lachlanap.balloonbox.core.level.Entity;
  */
 public class Viewport {
 
-    public static final float MARGIN = 200f;
+    public static final float MARGIN = 300f;
     private final Vector2 size;
     private final Vector2 centre;
 

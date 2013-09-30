@@ -13,11 +13,17 @@ import me.lachlanap.lct.Constant;
 public class Background {
 
     @Constant(name = "Y Shift", constraints = "-1000,1000")
-    public static float Y_SHIFT = -750f;
-    @Constant(name = "Parallax Speed", constraints = "0,1")
-    public static float PARALLAX_SPEED = 0.6f;
-    @Constant(name = "Draw Background Image")
-    public static boolean DRAW_BACKGROUND_IMAGE = true;
+    public static float BASE_Y_SHIFT = -750f;
+    //
+    private static final float[] PARALLAX_SPEEDS = {
+        0.3f, 0.5f, 0.7f, 0.75f
+    };
+    private static final int[] PARALLAX_WIDTH_SCALE = {
+        1, 5, 13, 13
+    };
+    private static final int[] PARALLAX_HEIGHT_SHIFT = {
+        0, 1000, 2000, 3000
+    };
     //
     private final TextureBook textureBook;
     private final Vector2 spawnPoint;
@@ -28,31 +34,46 @@ public class Background {
     }
 
     public void draw(SpriteBatch batch, Vector2 viewportCentre) {
-        Texture background = textureBook.getBackground1();
+        drawBase(viewportCentre, batch);
+        drawImages(viewportCentre, batch);
+    }
 
-        final int bWidth = background.getWidth();
+    private void drawBase(Vector2 viewportCentre, SpriteBatch batch) {
+        float y = viewportCentre.y;
+        y += spawnPoint.y * LevelScreen.PIXELS_IN_A_METRE;
+        y += BASE_Y_SHIFT;
+        y *= PARALLAX_SPEEDS[0];
 
-        Vector2 basePosition = new Vector2();
-        basePosition.x = viewportCentre.x * PARALLAX_SPEED;
-        basePosition.y = viewportCentre.y;
+        Texture top = textureBook.getBackgroundTop();
+        Texture bottom = textureBook.getBackgroundBottom();
 
-        basePosition.x = ((int) (basePosition.x) % bWidth - bWidth);
-        basePosition.y = basePosition.y + spawnPoint.y * LevelScreen.PIXELS_IN_A_METRE;
-
-        basePosition.y += Y_SHIFT;
-        basePosition.y *= PARALLAX_SPEED;
-
-        Texture top = textureBook.getBackground1Top();
-        Texture bottom = textureBook.getBackground1Bottom();
-
-        if (basePosition.y < 0)
+        if (y < 0)
             batch.draw(top, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         else
             batch.draw(bottom, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        if (DRAW_BACKGROUND_IMAGE) {
+    }
+
+    private void drawImages(Vector2 viewportCentre, SpriteBatch batch) {
+        for (int i = 0; i < PARALLAX_SPEEDS.length; i++) {
+            Texture background = textureBook.getBackground(i);
+            float parallaxSpeed = PARALLAX_SPEEDS[i];
+
+            final int bWidth = background.getWidth() * PARALLAX_WIDTH_SCALE[i];
+
+            Vector2 basePosition = new Vector2();
+            basePosition.x = viewportCentre.x * parallaxSpeed;
+            basePosition.y = viewportCentre.y;
+
+            basePosition.x = ((int) (basePosition.x) % bWidth - bWidth);
+            basePosition.y += spawnPoint.y * LevelScreen.PIXELS_IN_A_METRE;
+
+            basePosition.y += BASE_Y_SHIFT + PARALLAX_HEIGHT_SHIFT[i];
+            basePosition.y *= parallaxSpeed;
+
             while (basePosition.x < -bWidth)
                 basePosition.x += bWidth;
+
             while (basePosition.x <= Gdx.graphics.getWidth()) {
                 batch.draw(background, basePosition.x, basePosition.y);
                 basePosition.x += bWidth;

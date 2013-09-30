@@ -67,28 +67,24 @@ public class LevelScreen extends AbstractScreen {
 
 
         performanceMonitor.begin("render");
+        batch.begin();
 
         viewport.follow(level.getBoxis());
         Vector2 viewportCentre = viewport.getCentre();
 
-        batch.begin();
         background.draw(batch, viewportCentre);
-        batch.end();
 
         performanceMonitor.begin("render.entities");
-        batch.begin();
         renderEntities(viewportCentre);
-        batch.end();
         performanceMonitor.end("render.entities");
 
         performanceMonitor.begin("render.misc");
-        batch.begin();
         renderPipes(viewportCentre);
         renderBricks(viewportCentre);
         renderScore();
-        batch.end();
         performanceMonitor.end("render.misc");
 
+        batch.end();
         performanceMonitor.end("render");
 
         if (DEBUG)

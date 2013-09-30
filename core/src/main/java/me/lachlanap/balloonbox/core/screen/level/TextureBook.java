@@ -16,9 +16,9 @@ public class TextureBook {
     private Texture entryPipeTexture;
     private Texture exitPipeTexture;
     //
-    private Texture background1;
-    private Texture background1Top;
-    private Texture background1Bottom;
+    private Texture[] backgrounds;
+    private Texture backgroundTop;
+    private Texture backgroundBottom;
 
     public TextureBook() {
         entityTextures = new EnumMap<>(EntityType.class);
@@ -33,9 +33,14 @@ public class TextureBook {
         entryPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
         exitPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
 
-        background1 = new Texture(Gdx.files.internal("backgrounds/background-1.png"));
-        background1Top = new Texture(Gdx.files.internal("backgrounds/background-1-top.png"));
-        background1Bottom = new Texture(Gdx.files.internal("backgrounds/background-1-bottom.png"));
+        backgrounds = new Texture[]{
+            new Texture(Gdx.files.internal("backgrounds/background-1.png")),
+            new Texture(Gdx.files.internal("backgrounds/background-2.png")),
+            new Texture(Gdx.files.internal("backgrounds/background-4.png")),
+            new Texture(Gdx.files.internal("backgrounds/background-4.png")),};
+
+        backgroundTop = new Texture(Gdx.files.internal("backgrounds/background-1-top.png"));
+        backgroundBottom = new Texture(Gdx.files.internal("backgrounds/background-1-bottom.png"));
     }
 
     public Texture getEntityTexture(EntityType type) {
@@ -50,15 +55,15 @@ public class TextureBook {
         return exitPipeTexture;
     }
 
-    public Texture getBackground1() {
-        return background1;
+    public Texture getBackground(int index) {
+        return backgrounds[index];
     }
 
-    public Texture getBackground1Top() {
-        return background1Top;
+    public Texture getBackgroundTop() {
+        return backgroundTop;
     }
 
-    public Texture getBackground1Bottom() {
-        return background1Bottom;
+    public Texture getBackgroundBottom() {
+        return backgroundBottom;
     }
 }
