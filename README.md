@@ -6,6 +6,20 @@ What is it?
 
 Balloon Box is a platformer game.
 
+Running Balloon Box
+-------------------
+
+Download the code and either:
+
+Run it directly: `mvn install exec:java -Dexec.mainClass=me.lachlanap.balloonbox.desktop.BalloonBoxGameDesktop`.
+
+Package a jar and run it:
+```
+mvn package
+java -jar target/balloonbox-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+
 Story (short)
 -------------
 
@@ -13,7 +27,7 @@ _(note: things in **bold** haven't been decided yet)_
 
 The main character in Balloon Box is _Boxis_ - an unknown person that moves around inside a cardboard box.
 
-Boxis is stuck in a factory, trying to get out. All you can see of him is his eye (through the lookout hole in the box). Boxis travels throughout the factory through vacuum pipes, collecting balloons along the way to help him float out through the roof... he also picks up **batteries/stars** to **power/activate** the vacuum system.
+Boxis is stuck in a factory, trying to get out. All you can see of him is his eye (through the lookout hole in the box). Boxis travels throughout the factory through vacuum pipes, collecting balloons along the way to help him float out through the roof... he also picks up batteries to power the vacuum system.
 
 After working his way through some of the factory he **does something** and **discovers** cardboard-dissolving acid is now in various places (which must be avoided).
 
