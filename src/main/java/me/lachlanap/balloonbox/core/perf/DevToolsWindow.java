@@ -4,14 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import me.lachlanap.balloonbox.core.lctext.BooleanConstantField;
 import me.lachlanap.balloonbox.core.lctext.BooleanEditor;
+import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.lct.LCTManager;
 import me.lachlanap.lct.gui.ConstantEditorFactory;
 import me.lachlanap.lct.gui.LCTEditor;
@@ -25,6 +24,7 @@ public class DevToolsWindow {
     private final LCTManager lctManager;
     private final PerformanceMonitor performanceMonitor;
     private final JFrame frame;
+    private ManualActionsPanel manualActionsPanel;
 
     public DevToolsWindow(LCTManager lctManager, PerformanceMonitor performanceMonitor) {
         this.lctManager = lctManager;
@@ -53,6 +53,9 @@ public class DevToolsWindow {
         LCTEditor lctEditor = new LCTEditor(lctManager, cef);
         pane.add(wrap(lctEditor, "Live Constant Tweaker"));
 
+        manualActionsPanel = new ManualActionsPanel();
+        pane.add(wrap(manualActionsPanel, "Manual Actions"));
+
         LogMonitor logMonitor = new LogMonitor();
         pane.add(wrap(logMonitor, "Log Monitor"));
 
@@ -73,5 +76,9 @@ public class DevToolsWindow {
 
     public void toggleVisibility() {
         frame.setVisible(!frame.isVisible());
+    }
+
+    public void setLevel(Level level) {
+        manualActionsPanel.setLevel(level);
     }
 }

@@ -1,7 +1,11 @@
 package me.lachlanap.balloonbox.core.level;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Score {
 
+    private static final Logger LOG = Logger.getLogger(Score.class.getName());
     public static final int DEFAULT_LIVES = 3;
     private int balloons;
     private int lives;
@@ -27,6 +31,7 @@ public class Score {
 
     public void takeLife() {
         lives--;
+        LOG.log(Level.INFO, "Took a life; now {0} left", new Object[]{lives});
     }
 
     public int getBalloons() {

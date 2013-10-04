@@ -109,6 +109,7 @@ public class BalloonBoxGame extends Game {
 
                 Level level = loader.loadLevel(levelScene.getName());
                 setScreen(new LevelScreen(BalloonBoxGame.this, level, performanceMonitor));
+                devToolsWindow.setLevel(level);
             }
         }
 

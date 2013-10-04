@@ -43,17 +43,18 @@ public class LogMonitor extends JPanel {
         final Formatter formatter = new Formatter() {
             @Override
             public String format(LogRecord record) {
+                String message = formatMessage(record);
                 if (record.getThrown() == null)
                     return record.getLevel().getLocalizedName()
                             + " (" + record.getThreadID() + "): "
-                            + record.getMessage()
+                            + message
                             + " [" + record.getMillis() + "]";
                 else {
                     Throwable t = record.getThrown();
                     return record.getLevel().getLocalizedName()
                             + " (" + record.getThreadID() + "): "
                             + t.getClass().getName() + ": "
-                            + record.getMessage() + ": "
+                            + message + ": "
                             + t.getMessage()
                             + " [" + record.getMillis() + "]";
                 }
@@ -67,6 +68,7 @@ public class LogMonitor extends JPanel {
                 public void run() {
                     String line = formatter.format(record);
                     logOutput.setText(line + "\n" + logOutput.getText());
+                    logOutput.setCaretPosition(0);
                 }
             });
         }
