@@ -1,4 +1,3 @@
-/core/target/
-/desktop/target/
+target/
 nb*.xml
 **/nb*.xml

@@ -2,17 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    
     <groupId>me.lachlanap.balloonbox</groupId>
     <artifactId>balloonbox</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <name>BalloonBoxGame Parent</name>
+    <version>1.0-SNAPSHOT</version>    
+    <packaging>jar</packaging>
+    <name>BalloonBox</name>
 
     <properties>
-        <gdx.version>0.9.9-SNAPSHOT</gdx.version>
-        <android.version>2.1.2</android.version>
-        <android.maven.version>3.4.1</android.maven.version>
-        <gwt.version>2.5.0</gwt.version>
+        <mainClass>me.lachlanap.balloonbox.desktop.BalloonBoxGameDesktop</mainClass>
     </properties>
 
     <repositories>
@@ -21,31 +19,130 @@
             <url>http://libgdx.badlogicgames.com/nightlies/maven</url>
         </repository>
     </repositories>
+    
+    <dependencies>
+        <dependency>
+            <groupId>com.badlogic.gdx</groupId>
+            <artifactId>gdx</artifactId>
+            <version>0.9.9-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>me.lachlanap</groupId>
+            <artifactId>LiveConstantTweaker</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>14.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.9.9-RC1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.badlogic.gdx</groupId>
+            <artifactId>gdx-backend-lwjgl</artifactId>
+            <version>0.9.9-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
     <build>
+    	<resources>
+            <resource>
+                <directory>assets</directory>
+            </resource>
+        </resources>
+        
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.5.1</version>
                 <configuration>
-                    <source>1.6</source>
+                    <source>1.7</source>
                     <target>1.7</target>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>com.googlecode.mavennatives</groupId>
+                <artifactId>maven-nativedependencies-plugin</artifactId>
+                <version>0.0.6</version>
+                <executions>
+                    <execution>
+                        <id>unpacknatives</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <target>
+                                <java fork="true" classname="${mainClass}" classpathref="maven.test.classpath">
+                                    <sysproperty key="java.library.path" value="target/natives"/>
+                                </java>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- this builds a totally standalone jar file when you invoke: mvn package -->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>${mainClass}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>desktop</id>
-            <modules>
-                <module>desktop</module>
-            </modules>
-        </profile>
-    </profiles>
-
-    <modules>
-        <module>core</module>
-    </modules>
 </project>
