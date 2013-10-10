@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="100" height="100" tilewidth="32" tileheight="32">
+ <tileset firstgid="1" name="bricks" tilewidth="32" tileheight="32">
+  <image source="../wall/bricks.png" width="150" height="50"/>
+ </tileset>
+ <layer name="bricks" width="100" height="100">
+  <data encoding="base64" compression="zlib">
+   eJzt2duOgyAQANCa7P9/86YPTbqsAiNIkZ6T9EEFLzPKrY/HX1vh9zPwl9PzXDPbMsciz9Uag54xlo+5YjDTvUSNyMfodkQ+ykbGaOV81LTjtd9Gbb/dauV8RPe1xKJXm/ZN+SiVOxvTnuNj+fi/HR0LRHMqH+X9aZmWcvJRJ/Lut/QHLW3St+QjMk56rbfsnSNyrdzxUv07qs3He3z2+ouj2LeuVeXKlM5xR5H5x/v+tNxR3dx5a66bK5Ort1o+SvEsbdd+A5Hr5q4ZPT6T9D0qrbnv1T/avrIPz91D9PhMonOD0r4e8/Mzc5aW4zOJxK9H21FTP3qOXF9xt/4j0r609AW193Km7krzj+g3cfQOlsqkx6Lj3sg91t7LjM48SymWreOlqFX7j7P1W+cgrVbOx1Xv75UxWWk+ePQsW7J99vlGxOPKMcZoaexf0nykdWrHviPiMGIcPsr7nDxXZm9fGu+eY6aI1fLxklu/mtmq+Xhq+Z/iU1bqP55Ka4jR/w1HW2m8u4Kj8cYdx7srqFmbYZyadVDGKq1hMl5uHZPP6L2WDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEDcL0e5BZI=
+  </data>
+ </layer>
+ <objectgroup name="points" width="100" height="100">
+  <object name="spawn" x="256" y="480"/>
+  <object name="exit" x="1760" y="928"/>
+ </objectgroup>
+ <objectgroup name="balloons" width="100" height="100">
+  <object x="384" y="384"/>
+  <object x="448" y="320"/>
+  <object x="544" y="128"/>
+  <object x="672" y="128"/>
+  <object x="608" y="320"/>
+  <object x="704" y="352"/>
+  <object x="608" y="544"/>
+  <object x="672" y="768"/>
+  <object x="736" y="768"/>
+  <object x="192" y="672"/>
+  <object x="96" y="704"/>
+  <object x="256" y="576"/>
+  <object x="960" y="544"/>
+  <object x="1056" y="544"/>
+  <object x="1184" y="480"/>
+  <object x="960" y="320"/>
+  <object x="1152" y="224"/>
+  <object x="1376" y="192"/>
+  <object x="1472" y="192"/>
+  <object x="1600" y="192"/>
+  <object x="1824" y="832"/>
+  <object x="1664" y="960"/>
+ </objectgroup>
+ <objectgroup name="batteries" width="100" height="100">
+  <object x="448" y="128"/>
+  <object x="192" y="544"/>
+  <object x="224" y="864"/>
+  <object x="480" y="544"/>
+  <object x="960" y="64"/>
+  <object x="1280" y="352"/>
+  <object x="1792" y="384"/>
+  <object x="1664" y="512"/>
+  <object x="1760" y="672"/>
+  <object x="1792" y="1056"/>
+ </objectgroup>
+</map>
