@@ -8,11 +8,8 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import me.lachlanap.balloonbox.core.lctext.BooleanConstantField;
-import me.lachlanap.balloonbox.core.lctext.BooleanEditor;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.lct.LCTManager;
-import me.lachlanap.lct.gui.ConstantEditorFactory;
 import me.lachlanap.lct.gui.LCTEditor;
 
 /**
@@ -46,11 +43,7 @@ public class DevToolsWindow {
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         root.add(pane, BorderLayout.CENTER);
 
-
-        ConstantEditorFactory cef = new ConstantEditorFactory();
-        cef.addEditor(BooleanConstantField.class, BooleanEditor.class);
-
-        LCTEditor lctEditor = new LCTEditor(lctManager, cef);
+        LCTEditor lctEditor = new LCTEditor(lctManager);
         pane.add(wrap(lctEditor, "Live Constant Tweaker"));
 
         manualActionsPanel = new ManualActionsPanel();

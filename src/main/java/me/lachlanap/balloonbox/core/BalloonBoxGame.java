@@ -1,6 +1,5 @@
 package me.lachlanap.balloonbox.core;
 
-import me.lachlanap.balloonbox.core.lctext.BooleanConstantFieldProvider;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import java.lang.reflect.Field;
@@ -15,15 +14,9 @@ import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 import me.lachlanap.balloonbox.core.screen.eol.EndOfLevelScreen;
 import me.lachlanap.balloonbox.core.screen.level.LevelScreen;
-import me.lachlanap.balloonbox.core.story.LevelScene;
-import me.lachlanap.balloonbox.core.story.Scene;
-import me.lachlanap.balloonbox.core.story.Story;
-import me.lachlanap.balloonbox.core.story.StoryController;
-import me.lachlanap.balloonbox.core.story.StoryListener;
-import me.lachlanap.balloonbox.core.story.StoryLoader;
+import me.lachlanap.balloonbox.core.story.*;
 import me.lachlanap.lct.Constant;
 import me.lachlanap.lct.LCTManager;
-import me.lachlanap.lct.data.ConstantFieldFactory;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.SubTypesScanner;
@@ -48,10 +41,7 @@ public class BalloonBoxGame extends Game {
     }
 
     private LCTManager setupLCTManager() {
-        ConstantFieldFactory cff = new ConstantFieldFactory();
-        cff.addProvider(new BooleanConstantFieldProvider());
-
-        LCTManager manager = new LCTManager(cff);
+        LCTManager manager = new LCTManager();
 
         /* Magic to get all the constants */
         Reflections reflections = new Reflections(new ConfigurationBuilder()

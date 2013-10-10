@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <groupId>me.lachlanap.balloonbox</groupId>
     <artifactId>balloonbox</artifactId>
-    <version>1.0-SNAPSHOT</version>    
+    <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>BalloonBox</name>
 
@@ -19,40 +19,40 @@
             <url>http://libgdx.badlogicgames.com/nightlies/maven</url>
         </repository>
     </repositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>com.badlogic.gdx</groupId>
             <artifactId>gdx</artifactId>
             <version>0.9.9-SNAPSHOT</version>
         </dependency>
-        
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
-            <groupId>me.lachlanap</groupId>
-            <artifactId>LiveConstantTweaker</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>me.lachlanap.lct</groupId>
+            <artifactId>lct</artifactId>
+            <version>1.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
@@ -67,12 +67,12 @@
     </dependencies>
 
     <build>
-    	<resources>
+        <resources>
             <resource>
                 <directory>assets</directory>
             </resource>
         </resources>
-        
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
