@@ -37,8 +37,9 @@ public class Score {
     }
 
     public void takeLife() {
-        lives--;
+        lives = Math.max(0, lives - 1);
         tookLifeSinceLastUpdate = true;
+
         LOG.log(Level.INFO, "Took a life; now {0} left", new Object[]{lives});
     }
 

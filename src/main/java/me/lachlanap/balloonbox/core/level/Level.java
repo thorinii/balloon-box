@@ -22,11 +22,11 @@ public class Level {
 
     public static final Logger LOG = Logger.getLogger(Level.class.getName());
     @Constant(name = "Exit Scale", constraints = "0,0.5")
-    public static float EXIT_SCALE = .013f;
+    public static float EXIT_SCALE = 0.027f;
     @Constant(name = "Max Exit Suction", constraints = "0,1")
     public static float MAX_EXIT_SUCTION = 0.035f;
     @Constant(name = " X Exit Scale", constraints = "0,1")
-    public static float X_EXIT_SCALE = 0.05f;
+    public static float X_EXIT_SCALE = 0.01f;
     @Constant(name = "Exit Fan Override")
     public static boolean EXIT_FAN_OVERRIDE = false;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
@@ -176,6 +176,8 @@ public class Level {
         performanceMonitor.end("update.box2d");
 
         score.update(boxis, timerManager, new CreateBoxisTask());
+        if (score.getLives() <= 0)
+            gameover = true;
 
         performanceMonitor.begin("update.removing-dead");
         removeDeadEntities();

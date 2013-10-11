@@ -21,19 +21,27 @@ public class EndOfLevelScreen extends AbstractScreen {
     private static final int P_X = 540;
     private static final int P_Y = 470;
     private final String levelName;
+    private final boolean won;
     private final Map<String, String> data = new LinkedHashMap<>();
 
     public EndOfLevelScreen(BalloonBoxGame game, EndOfLevelInfo info) {
         super(game);
 
         levelName = info.levelName;
+        won = info.lives > 0;
 
         NumberFormat nf = NumberFormat.getNumberInstance();
         nf.setMaximumFractionDigits(2);
 
-        data.put("Time", nf.format(info.timeSpent) + " seconds");
-        data.put("Balloons", nf.format(info.balloons));
-        data.put("Lives Left", nf.format(info.lives));
+        if (info.lives > 0) {
+            data.put("Time", nf.format(info.timeSpent) + " seconds");
+            data.put("Balloons", nf.format(info.balloons));
+            data.put("Lives Left", nf.format(info.lives));
+        } else {
+            data.put("You", "Failed");
+            data.put("Time", nf.format(info.timeSpent) + " seconds");
+            data.put("Balloons", nf.format(info.balloons));
+        }
     }
 
     @Override
@@ -72,9 +80,12 @@ public class EndOfLevelScreen extends AbstractScreen {
         if (button != Input.Buttons.LEFT)
             return true;
 
-        if (screenX < 540)
-            gotoNextMap();
-        else
+        if (screenX < 540) {
+            if (won)
+                gotoNextMap();
+            else
+                gotoSameMap();
+        } else
             gotoMainMenu();
 
         return true;
@@ -82,6 +93,10 @@ public class EndOfLevelScreen extends AbstractScreen {
 
     private void gotoNextMap() {
         game.gotoNextLevel();
+    }
+
+    private void gotoSameMap() {
+        game.gotoSameLevel();
     }
 
     private void gotoMainMenu() {

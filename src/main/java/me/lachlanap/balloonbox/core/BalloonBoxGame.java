@@ -73,6 +73,10 @@ public class BalloonBoxGame extends Game {
         storyController.advance();
     }
 
+    public void gotoSameLevel() {
+        storyController.again();
+    }
+
     public void gotoMainMenu() {
         LOG.info("Going to MainMenu");
         setScreen(new AbstractScreen(this) {

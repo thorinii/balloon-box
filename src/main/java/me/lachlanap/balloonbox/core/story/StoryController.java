@@ -27,6 +27,13 @@ public class StoryController {
             advanceScene(story.getScene(index));
     }
 
+    public void again() {
+        if (index == story.getSceneCount())
+            end();
+        else if (index < story.getSceneCount())
+            advanceScene(story.getScene(index));
+    }
+
     private void end() {
         for (StoryListener listener : listeners)
             listener.end();

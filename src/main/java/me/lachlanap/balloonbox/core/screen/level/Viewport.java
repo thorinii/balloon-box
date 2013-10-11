@@ -13,7 +13,7 @@ public class Viewport {
     @Constant(name = "X Margin", constraints = "0,500")
     public static float X_MARGIN = 300f;
     @Constant(name = "Y Margin", constraints = "0,500")
-    public static float Y_MARGIN = 300f;
+    public static float Y_MARGIN = 230f;
     //
     private final Vector2 size;
     private final Vector2 centre;
