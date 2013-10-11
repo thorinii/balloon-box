@@ -2,6 +2,7 @@ package me.lachlanap.balloonbox.core.screen.level;
 
 import com.badlogic.gdx.math.Vector2;
 import me.lachlanap.balloonbox.core.level.Entity;
+import me.lachlanap.lct.Constant;
 
 /**
  *
@@ -9,7 +10,11 @@ import me.lachlanap.balloonbox.core.level.Entity;
  */
 public class Viewport {
 
-    public static final float MARGIN = 300f;
+    @Constant(name = "X Margin", constraints = "0,500")
+    public static float X_MARGIN = 300f;
+    @Constant(name = "Y Margin", constraints = "0,500")
+    public static float Y_MARGIN = 300f;
+    //
     private final Vector2 size;
     private final Vector2 centre;
 
@@ -33,21 +38,30 @@ public class Viewport {
         centre.y = -epos.y * LevelScreen.PIXELS_IN_A_METRE + size.y / 2;
     }
 
+    /**
+     * Follows the given entity with {@link X_MARGIN} and {@link Y_MARGIN} border around the screen.
+     *
+     * If null is passed as the entity, this will have no effect.
+     * @param entity
+     */
     public void follow(Entity entity) {
+        if (entity == null)
+            return;
+
         Vector2 epos = entity.getPosition();
 
-        if (-centre.x > epos.x * LevelScreen.PIXELS_IN_A_METRE - MARGIN) {
-            centre.x = -(epos.x * LevelScreen.PIXELS_IN_A_METRE - MARGIN);
+        if (-centre.x > epos.x * LevelScreen.PIXELS_IN_A_METRE - X_MARGIN) {
+            centre.x = -(epos.x * LevelScreen.PIXELS_IN_A_METRE - X_MARGIN);
         }
-        if (-centre.x < (epos.x * LevelScreen.PIXELS_IN_A_METRE + MARGIN - size.x)) {
-            centre.x = -(epos.x * LevelScreen.PIXELS_IN_A_METRE + MARGIN - size.x);
+        if (-centre.x < (epos.x * LevelScreen.PIXELS_IN_A_METRE + X_MARGIN - size.x)) {
+            centre.x = -(epos.x * LevelScreen.PIXELS_IN_A_METRE + X_MARGIN - size.x);
         }
 
-        if (-centre.y > epos.y * LevelScreen.PIXELS_IN_A_METRE - MARGIN) {
-            centre.y = -(epos.y * LevelScreen.PIXELS_IN_A_METRE - MARGIN);
+        if (-centre.y > epos.y * LevelScreen.PIXELS_IN_A_METRE - Y_MARGIN) {
+            centre.y = -(epos.y * LevelScreen.PIXELS_IN_A_METRE - Y_MARGIN);
         }
-        if (-centre.y < (epos.y * LevelScreen.PIXELS_IN_A_METRE + MARGIN - size.y)) {
-            centre.y = -(epos.y * LevelScreen.PIXELS_IN_A_METRE + MARGIN - size.y);
+        if (-centre.y < (epos.y * LevelScreen.PIXELS_IN_A_METRE + Y_MARGIN - size.y)) {
+            centre.y = -(epos.y * LevelScreen.PIXELS_IN_A_METRE + Y_MARGIN - size.y);
         }
     }
 }

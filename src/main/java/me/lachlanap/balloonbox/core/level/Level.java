@@ -7,15 +7,11 @@ import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
-import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
-import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
-import me.lachlanap.balloonbox.core.level.physics.DelegatingContactListener;
-import me.lachlanap.balloonbox.core.level.physics.EntityCollisionContactHandler;
-import me.lachlanap.balloonbox.core.level.physics.OnGroundContactHandler;
-import me.lachlanap.balloonbox.core.level.physics.SensorManager;
+import me.lachlanap.balloonbox.core.level.physics.*;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BatteryCollisionHandler;
+import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.lct.Constant;
 
 /**
@@ -40,6 +36,7 @@ public class Level {
     private final World world;
     private final SensorManager sensorManager;
     private final Sensor exitFanSensor;
+    private final TimerManager timerManager;
     //
     private PerformanceMonitor performanceMonitor = null;
     private boolean gameover;
@@ -87,6 +84,8 @@ public class Level {
         exitFanSensor = sensorManager.createSensor("exit-fan",
                                                    staticLevelData.exitPoint.cpy().add(0, EXIT_SENSOR_HEIGHT / 2),
                                                    new Vector2(EXIT_SENSOR_WIDTH / 2, EXIT_SENSOR_HEIGHT / 2));
+
+        timerManager = new TimerManager();
 
         setupWorld();
 
@@ -168,9 +167,13 @@ public class Level {
     public void update() {
         performanceMonitor.begin("update");
 
+        timerManager.update(1 / 60f);
+
         performanceMonitor.begin("update.box2d");
         world.step(1 / 60f, 8, 3);
         performanceMonitor.end("update.box2d");
+
+        score.update(boxis, timerManager, new CreateBoxisTask());
 
         performanceMonitor.begin("update.removing-dead");
         removeDeadEntities();
@@ -191,6 +194,9 @@ public class Level {
             if (e.isMarkedForKill()) {
                 needKilling.add(e);
                 e.detachFromWorld(world);
+
+                if (boxis == e)
+                    boxis = null;
             }
         }
 
@@ -222,6 +228,14 @@ public class Level {
                 if (entity == boxis)
                     gameover = true;
             }
+        }
+    }
+
+    private class CreateBoxisTask implements Runnable {
+
+        @Override
+        public void run() {
+            addBoxis();
         }
     }
 }
