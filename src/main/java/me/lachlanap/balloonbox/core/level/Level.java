@@ -27,6 +27,8 @@ public class Level {
     public static float MAX_EXIT_SUCTION = 0.035f;
     @Constant(name = " X Exit Scale", constraints = "0,1")
     public static float X_EXIT_SCALE = 0.05f;
+    @Constant(name = "Exit Fan Override")
+    public static boolean EXIT_FAN_OVERRIDE = false;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
     public static final float EXIT_SENSOR_HEIGHT = 1.5f;
     //
@@ -179,7 +181,8 @@ public class Level {
         removeDeadEntities();
         performanceMonitor.end("update.removing-dead");
 
-        if (!gameover && score.getBatteries() >= staticLevelData.batteries.size()) {
+        if (!gameover
+                && (score.getBatteries() >= staticLevelData.batteries.size() || EXIT_FAN_OVERRIDE)) {
             doExitFan();
         }
 
