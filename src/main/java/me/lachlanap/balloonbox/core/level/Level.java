@@ -1,5 +1,6 @@
 package me.lachlanap.balloonbox.core.level;
 
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -47,19 +48,29 @@ public class Level {
     public static class StaticLevelData {
 
         public static final float GRID_SCALE = 0.2f;
+        public static final float BOUNDS_PADDING = 5f;
+        //
         public final boolean[][] brickMap;
         public final Vector2 spawnPoint;
         public final Vector2 exitPoint;
         public final List<Vector2> balloons;
         public final List<Vector2> batteries;
+        public final Rectangle bounds;
 
         public StaticLevelData(boolean[][] brickMap, Vector2 spawnPoint, Vector2 exitPoint,
-                List<Vector2> balloons, List<Vector2> batteries) {
+                List<Vector2> balloons,
+                List<Vector2> batteries) {
             this.brickMap = brickMap;
             this.balloons = balloons;
             this.spawnPoint = spawnPoint;
             this.exitPoint = exitPoint;
             this.batteries = batteries;
+            bounds = new Rectangle();
+
+            bounds.x = -BOUNDS_PADDING;
+            bounds.y = -BOUNDS_PADDING;
+            bounds.width = brickMap.length * GRID_SCALE + 2 * BOUNDS_PADDING;
+            bounds.height = brickMap[0].length * GRID_SCALE + 2 * BOUNDS_PADDING;
 
             spawnPoint.scl(GRID_SCALE);
             exitPoint.scl(GRID_SCALE);
@@ -175,6 +186,10 @@ public class Level {
         world.step(1 / 60f, 8, 3);
         performanceMonitor.end("update.box2d");
 
+        if (boxis != null && !staticLevelData.bounds.contains(boxis.getPosition())) {
+            score.takeLife();
+        }
+
         score.update(boxis, timerManager, new CreateBoxisTask());
         if (score.getLives() <= 0)
             gameover = true;
@@ -196,11 +211,11 @@ public class Level {
         for (Entity e : entities) {
             e.update();
 
-            if (e.isMarkedForKill()) {
+            if (e.isMarkedForKill() || !staticLevelData.bounds.contains(e.getPosition())) {
                 needKilling.add(e);
                 e.detachFromWorld(world);
 
-                if (boxis == e)
+                if (e == boxis)
                     boxis = null;
             }
         }
