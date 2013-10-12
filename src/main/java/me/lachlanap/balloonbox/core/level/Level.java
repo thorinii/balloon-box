@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
+import me.lachlanap.balloonbox.core.level.controller.KeyboardController;
+import me.lachlanap.balloonbox.core.level.controller.TimedSelfDestructController;
 import me.lachlanap.balloonbox.core.level.physics.*;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
@@ -22,16 +24,15 @@ import me.lachlanap.lct.Constant;
 public class Level {
 
     public static final Logger LOG = Logger.getLogger(Level.class.getName());
-    @Constant(name = "Exit Scale", constraints = "0,0.5")
-    public static float EXIT_SCALE = 0.027f;
-    @Constant(name = "Max Exit Suction", constraints = "0,1")
-    public static float MAX_EXIT_SUCTION = 0.035f;
-    @Constant(name = " X Exit Scale", constraints = "0,1")
-    public static float X_EXIT_SCALE = 0.01f;
+    @Constant(name = "Fluid Drag", constraints = "0,1")
+    public static float FLUID_DRAG = 0.2f;
     @Constant(name = "Exit Fan Override")
     public static boolean EXIT_FAN_OVERRIDE = false;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
     public static final float EXIT_SENSOR_HEIGHT = 1.5f;
+    public static final float EXIT_SCALE = 0.027f;
+    public static final float MAX_EXIT_SUCTION = 0.035f;
+    public static final float X_EXIT_SCALE = 0.05f;
     //
     private final StaticLevelData staticLevelData;
     private final List<Entity> entities;
@@ -40,6 +41,7 @@ public class Level {
     private final SensorManager sensorManager;
     private final Sensor exitFanSensor;
     private final TimerManager timerManager;
+    private final Sensor[] acidSensors;
     //
     private PerformanceMonitor performanceMonitor = null;
     private boolean gameover;
@@ -55,16 +57,19 @@ public class Level {
         public final Vector2 exitPoint;
         public final List<Vector2> balloons;
         public final List<Vector2> batteries;
+        public final List<Rectangle> acids;
         public final Rectangle bounds;
 
         public StaticLevelData(boolean[][] brickMap, Vector2 spawnPoint, Vector2 exitPoint,
                 List<Vector2> balloons,
-                List<Vector2> batteries) {
+                List<Vector2> batteries, List<Rectangle> acids) {
             this.brickMap = brickMap;
             this.balloons = balloons;
             this.spawnPoint = spawnPoint;
             this.exitPoint = exitPoint;
             this.batteries = batteries;
+            this.acids = acids;
+
             bounds = new Rectangle();
 
             bounds.x = -BOUNDS_PADDING;
@@ -79,6 +84,12 @@ public class Level {
             }
             for (Vector2 battery : batteries) {
                 battery.scl(GRID_SCALE);
+            }
+            for (Rectangle acid : acids) {
+                acid.x *= GRID_SCALE;
+                acid.y *= GRID_SCALE;
+                acid.width *= GRID_SCALE;
+                acid.height *= GRID_SCALE;
             }
         }
     }
@@ -100,10 +111,22 @@ public class Level {
 
         timerManager = new TimerManager();
 
+        acidSensors = new Sensor[staticLevelData.acids.size()];
+
         setupWorld();
 
 
         addBoxis();
+
+        int i = 0;
+        for (Rectangle acidBounds : staticLevelData.acids) {
+            acidSensors[i] = sensorManager.createSensor("acid-" + i,
+                                                        new Vector2(acidBounds.x + acidBounds.width / 2,
+                                                                    acidBounds.y + acidBounds.height / 2),
+                                                        new Vector2(acidBounds.width / 2,
+                                                                    acidBounds.height / 2));
+            i++;
+        }
 
         gameover = false;
     }
@@ -203,13 +226,52 @@ public class Level {
             doExitFan();
         }
 
+
+        for (Sensor acid : acidSensors) {
+            float aLeft = acid.getPosition().x - acid.getExtents().x;
+            float aTop = acid.getPosition().y - acid.getExtents().y;
+            float aRight = aLeft + acid.getExtents().x * 2;
+            float aBottom = aTop + acid.getExtents().y * 2;
+
+            for (Entity e : acid.getTouchingEntities()) {
+                Vector2 p = e.getPosition();
+                Vector2 s = e.getSize();
+                float bLeft = p.x - s.x / 2;
+                float bTop = p.y - s.y / 2;
+                float bRight = p.x + s.x;
+                float bBottom = p.y + s.y;
+
+                float cLeft = Math.max(aLeft, bLeft);
+                float cTop = Math.max(aTop, bTop);
+                float cRight = Math.min(aRight, bRight);
+                float cBottom = Math.min(aBottom, bBottom);
+
+                float width = cRight - cLeft;
+                float height = cBottom - cTop;
+
+                float area = width * height;
+                e.getBody().applyForceToCenter(world.getGravity().cpy().scl(-area * 1.1f), true);
+
+                Vector2 drag = e.getBody().getLinearVelocity().cpy();
+                drag.scl(drag.len2());
+                e.getBody().applyForceToCenter(drag.scl(-FLUID_DRAG), true);
+
+                if (!e.hasController(KeyboardController.class))
+                    continue;
+
+                e.removeController(KeyboardController.class);
+                e.addController(new TimedSelfDestructController(2, score));
+                e.getBody().setFixedRotation(false);
+            }
+        }
+
         performanceMonitor.end("update");
     }
 
     private void removeDeadEntities() {
         List<Entity> needKilling = new ArrayList<>();
         for (Entity e : entities) {
-            e.update();
+            e.update(1 / 60f);
 
             if (e.isMarkedForKill() || !staticLevelData.bounds.contains(e.getPosition())) {
                 needKilling.add(e);

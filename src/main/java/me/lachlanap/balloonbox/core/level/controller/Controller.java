@@ -14,5 +14,5 @@ public abstract class Controller {
         this.entity = entity;
     }
 
-    public abstract void update();
+    public abstract void update(float tpf);
 }

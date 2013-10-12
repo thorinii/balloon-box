@@ -1,13 +1,9 @@
 package me.lachlanap.balloonbox.core.level;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import me.lachlanap.balloonbox.core.level.controller.Controller;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
@@ -31,7 +27,7 @@ public class Entity {
 
     public Entity(boolean fixed, Vector2 initialPosition, Vector2 size, EntityType type, boolean needsGroundSensor) {
         this.fixed = fixed;
-        this.initialPosition = initialPosition;
+        this.initialPosition = initialPosition.cpy();
         this.size = size;
         this.type = type;
         this.needsGroundSensor = needsGroundSensor;
@@ -43,6 +39,8 @@ public class Entity {
         } else {
             body = Box2DFactory.createDynamic(world, initialPosition, size, 1);
         }
+
+        System.out.println(this + ": " + initialPosition + " - " + getPosition());
 
         if (needsGroundSensor) {
             FixtureDef fixtureDef = new FixtureDef();
@@ -82,9 +80,26 @@ public class Entity {
         controllers.add(controller);
     }
 
-    public void update() {
+    public void removeController(Class<? extends Controller> klass) {
+        for (Iterator<Controller> it = controllers.iterator(); it.hasNext();) {
+            Controller c = it.next();
+            if (klass.isInstance(c))
+                it.remove();
+        }
+    }
+
+    public boolean hasController(Class<? extends Controller> klass) {
+        for (Iterator<Controller> it = controllers.iterator(); it.hasNext();) {
+            Controller c = it.next();
+            if (klass.isInstance(c))
+                return true;
+        }
+        return false;
+    }
+
+    public void update(float tpf) {
         for (Controller c : controllers) {
-            c.update();
+            c.update(tpf);
         }
     }
 

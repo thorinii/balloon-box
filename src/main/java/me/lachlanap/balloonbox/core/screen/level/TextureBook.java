@@ -13,6 +13,8 @@ public class TextureBook {
 
     private final EnumMap<EntityType, Texture> entityTextures;
     //
+    private Texture acidTexture;
+    //
     private Texture entryPipeTexture;
     private Texture exitPipeTexture;
     //
@@ -30,6 +32,9 @@ public class TextureBook {
         entityTextures.put(EntityType.BALLOON, new Texture(Gdx.files.internal("balloon/balloon.png")));
         entityTextures.put(EntityType.BATTERY, new Texture(Gdx.files.internal("battery/battery.png")));
 
+        acidTexture = new Texture(Gdx.files.internal("acid/acid.png"));
+        acidTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
         entryPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
         exitPipeTexture = new Texture(Gdx.files.internal("pipes/entry.png"));
 
@@ -45,6 +50,10 @@ public class TextureBook {
 
     public Texture getEntityTexture(EntityType type) {
         return entityTextures.get(type);
+    }
+
+    public Texture getAcidTexture() {
+        return acidTexture;
     }
 
     public Texture getEntryPipeTexture() {

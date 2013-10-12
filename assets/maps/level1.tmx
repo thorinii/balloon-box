@@ -5,7 +5,7 @@
  </tileset>
  <layer name="bricks" width="100" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt2MEOQ1AQhlHe/6WbrqRJCfe6/MM5SXfUjG9RNU2kmV/6STVq17vvtx6/e959v5/UY88xZ56nx6LKnL2q7Fllzl5V9qwyZ69Ke1aZs4ceWfTIokeWSj2+zpwzcd+39kjd9409kndOnm3NFe8n7np/8cQee4/b2n3e+I6RntTjyLFH9tZjW8vMrS1ar9eqYo+r6ZFFjyxX/qbrsU/Ps1rPdfhPjzx65Fn776hHlhE9aKdHFj3yHH0GG/VMwEKPPGv3Uota9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUnwA+CACQw==
+   eJzt2NEKgjAYhuG6/5uOjqKYMVtz36/PAx1Eivv3goa3G2nuF/2kmjXr6v3W433O1ft9ph49x/zzPD1eqqxzVJU5q6xzVJU5q6xzVKU5q6xzhB5Z9MiiR5ZKPZ7+uc7Eea/aI3XeK/ZInjl5bVuOej+x4v1F1R6f31sz9M61p8fsPTpTj97jf/ldj+/2rrnnHtXq3Dp3pqo9ZtAjix5Ztu5lRz7T9egz8r955Dq06ZFnRY+Z1zqD1h6s3KOr99iiRxY9suiR55dn8ehzWo/v9MiztUd7W/i/u5Y9BgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABSPABJZAJE
   </data>
  </layer>
  <objectgroup name="points" width="100" height="100">
@@ -22,5 +22,11 @@
   <object x="1376" y="640"/>
   <object x="1568" y="640"/>
   <object x="736" y="320"/>
+ </objectgroup>
+ <objectgroup name="acid" width="100" height="100">
+  <object x="864" y="576" width="96" height="96"/>
+  <object x="1984" y="928" width="288" height="64"/>
+  <object x="544" y="512" width="224" height="64"/>
+  <object x="160" y="512" width="96" height="64"/>
  </objectgroup>
 </map>

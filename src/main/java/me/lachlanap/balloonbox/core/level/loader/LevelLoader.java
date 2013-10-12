@@ -3,9 +3,11 @@ package me.lachlanap.balloonbox.core.level.loader;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,13 +43,18 @@ public class LevelLoader {
 
         List<Vector2> balloons = loadVectors(unitsInGrid, map.getLayers().get("balloons"));
         List<Vector2> batteries = loadVectors(unitsInGrid, map.getLayers().get("batteries"));
+        List<Rectangle> acids;
+        if (map.getLayers().get("acid") != null)
+            acids = loadRectangles(unitsInGrid, map.getLayers().get("acid"));
+        else
+            acids = Collections.EMPTY_LIST;
 
         map.dispose();
 
 
         StaticLevelData staticLevelData = new StaticLevelData(brickMap,
                                                               spawnPoint, exitPoint,
-                                                              balloons, batteries);
+                                                              balloons, batteries, acids);
         return new Level(new Vector2(0, -9.81f), staticLevelData);
     }
 
@@ -81,5 +88,27 @@ public class LevelLoader {
         MapProperties props = obj.getProperties();
         return new Vector2(props.get("x", Integer.class) / unitsInGrid,
                            props.get("y", Integer.class) / unitsInGrid);
+    }
+
+    private List<Rectangle> loadRectangles(float unitsInGrid, MapLayer layer) {
+        List<Rectangle> list = new ArrayList<>();
+
+        if (layer == null)
+            LOG.warning("Couldn't load vectors");
+        else
+            for (MapObject obj : layer.getObjects()) {
+                if (obj instanceof RectangleMapObject) {
+                    RectangleMapObject rmo = (RectangleMapObject) obj;
+                    Rectangle r = new Rectangle(rmo.getRectangle());
+                    r.x /= unitsInGrid;
+                    r.y /= unitsInGrid;
+                    r.width /= unitsInGrid;
+                    r.height /= unitsInGrid;
+
+                    list.add(r);
+                }
+            }
+
+        return list;
     }
 }

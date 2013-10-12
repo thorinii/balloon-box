@@ -1,20 +1,8 @@
 package me.lachlanap.balloonbox.core.level.physics;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.Manifold;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.Shape;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.badlogic.gdx.physics.box2d.*;
+import java.util.*;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.Level;
 
@@ -26,10 +14,12 @@ public class SensorManager implements ContactListener {
 
     private final Level level;
     private final Map<Fixture, Sensor> fixture2Sensor;
+    private final Map<String, Sensor> sensorByName;
 
     public SensorManager(Level level) {
         this.level = level;
         fixture2Sensor = new HashMap<>();
+        sensorByName = new HashMap<>();
     }
 
     public Sensor createSensor(String name, Vector2 centre, Vector2 extents) {
@@ -52,12 +42,17 @@ public class SensorManager implements ContactListener {
 
         Sensor sensor = new Sensor(name, centre, extents);
         fixture2Sensor.put(fixture, sensor);
+        sensorByName.put(name, sensor);
 
         return sensor;
     }
 
     public List<Sensor> getSensors() {
         return new ArrayList<>(fixture2Sensor.values());
+    }
+
+    public Sensor getSensor(String name) {
+        return sensorByName.get(name);
     }
 
     @Override
@@ -160,6 +155,12 @@ public class SensorManager implements ContactListener {
         }
 
         public List<Entity> getTouchingEntities() {
+            for (Iterator<Entity> it = touchingEntities.iterator(); it.hasNext();) {
+                Entity touching = it.next();
+                if (touching.isMarkedForKill())
+                    it.remove();
+            }
+
             return touchingEntities;
         }
     }

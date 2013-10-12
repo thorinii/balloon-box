@@ -10,7 +10,7 @@ import com.badlogic.gdx.Input.Keys;
 public class KeyboardController extends Controller {
 
     @Override
-    public void update() {
+    public void update(float tpf) {
         // Going Left
         if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
             entity.addForce(-0.9f, 0);

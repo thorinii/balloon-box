@@ -4,14 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import me.lachlanap.balloonbox.core.BalloonBoxGame;
-import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
-import me.lachlanap.balloonbox.core.level.Entity;
-import me.lachlanap.balloonbox.core.level.EntityType;
-import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
-import me.lachlanap.balloonbox.core.level.Score;
+import me.lachlanap.balloonbox.core.level.*;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
@@ -26,6 +23,8 @@ public class LevelScreen extends AbstractScreen {
     public static final float PIXELS_IN_A_METRE = 240f;
     @Constant(name = "Debug")
     public static boolean DEBUG = false;
+    @Constant(name = "Acid Size")
+    public static float ACID_SIZE = 1.18f;
     private final Level level;
     private final PerformanceMonitor performanceMonitor;
     private final Viewport viewport;
@@ -78,9 +77,13 @@ public class LevelScreen extends AbstractScreen {
         renderEntities(viewportCentre);
         performanceMonitor.end("render.entities");
 
-        performanceMonitor.begin("render.misc");
+        performanceMonitor.begin("render.level");
+        renderAcids(viewportCentre);
         renderPipes(viewportCentre);
         renderBricks(viewportCentre);
+        performanceMonitor.end("render.level");
+
+        performanceMonitor.begin("render.misc");
         renderScore();
         performanceMonitor.end("render.misc");
 
@@ -94,6 +97,38 @@ public class LevelScreen extends AbstractScreen {
             game.gotoEoLScreen(EndOfLevelInfo.fromLevel(
                     level,
                     activeTime));
+    }
+
+    private void renderEntities(Vector2 viewportCentre) {
+        for (Entity e : level.getEntities()) {
+            Vector2 centre = e.getPosition();
+            Texture texture = textureBook.getEntityTexture(e.getType());
+
+            batch.draw(texture,
+                       centre.x * PIXELS_IN_A_METRE - texture.getWidth() / 2 + viewportCentre.x,
+                       centre.y * PIXELS_IN_A_METRE - texture.getHeight() / 2 + viewportCentre.y,
+                       texture.getWidth() / 2, texture.getHeight() / 2,
+                       texture.getWidth(), texture.getHeight(),
+                       1, 1,
+                       e.getAngle(),
+                       0, 0, texture.getWidth(), texture.getHeight(),
+                       false, false);
+        }
+    }
+
+    private void renderAcids(Vector2 viewportCentre) {
+        Texture texture = textureBook.getAcidTexture();
+
+        for (Rectangle acid : level.getStaticLevelData().acids) {
+            batch.draw(texture, acid.x * PIXELS_IN_A_METRE + viewportCentre.x,
+                       acid.y * PIXELS_IN_A_METRE + viewportCentre.y,
+                       acid.width * PIXELS_IN_A_METRE, acid.height * PIXELS_IN_A_METRE,
+                       0, 0,
+                       (int) (acid.width * ACID_SIZE * PIXELS_IN_A_METRE),
+                       (int) (acid.height * ACID_SIZE * PIXELS_IN_A_METRE),
+                       false, false);
+
+        }
     }
 
     private void renderBricks(Vector2 viewportCentre) {
@@ -117,23 +152,6 @@ public class LevelScreen extends AbstractScreen {
                            0, 0, texture.getWidth(), texture.getHeight(),
                            false, false);
             }
-        }
-    }
-
-    private void renderEntities(Vector2 viewportCentre) {
-        for (Entity e : level.getEntities()) {
-            Vector2 centre = e.getPosition();
-            Texture texture = textureBook.getEntityTexture(e.getType());
-
-            batch.draw(texture,
-                       centre.x * PIXELS_IN_A_METRE - texture.getWidth() / 2 + viewportCentre.x,
-                       centre.y * PIXELS_IN_A_METRE - texture.getHeight() / 2 + viewportCentre.y,
-                       texture.getWidth() / 2, texture.getHeight() / 2,
-                       texture.getWidth(), texture.getHeight(),
-                       1, 1,
-                       e.getAngle(),
-                       0, 0, texture.getWidth(), texture.getHeight(),
-                       false, false);
         }
     }
 
