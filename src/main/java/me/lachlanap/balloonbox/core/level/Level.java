@@ -25,7 +25,7 @@ public class Level {
 
     public static final Logger LOG = Logger.getLogger(Level.class.getName());
     @Constant(name = "Fluid Drag", constraints = "0,1")
-    public static float FLUID_DRAG = 0.2f;
+    public static float FLUID_DRAG = 0.15f;
     @Constant(name = "Exit Fan Override")
     public static boolean EXIT_FAN_OVERRIDE = false;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;
@@ -225,45 +225,7 @@ public class Level {
                 && (score.getBatteries() >= staticLevelData.batteries.size() || EXIT_FAN_OVERRIDE)) {
             doExitFan();
         }
-
-
-        for (Sensor acid : acidSensors) {
-            float aLeft = acid.getPosition().x - acid.getExtents().x;
-            float aTop = acid.getPosition().y - acid.getExtents().y;
-            float aRight = aLeft + acid.getExtents().x * 2;
-            float aBottom = aTop + acid.getExtents().y * 2;
-
-            for (Entity e : acid.getTouchingEntities()) {
-                Vector2 p = e.getPosition();
-                Vector2 s = e.getSize();
-                float bLeft = p.x - s.x / 2;
-                float bTop = p.y - s.y / 2;
-                float bRight = p.x + s.x;
-                float bBottom = p.y + s.y;
-
-                float cLeft = Math.max(aLeft, bLeft);
-                float cTop = Math.max(aTop, bTop);
-                float cRight = Math.min(aRight, bRight);
-                float cBottom = Math.min(aBottom, bBottom);
-
-                float width = cRight - cLeft;
-                float height = cBottom - cTop;
-
-                float area = width * height;
-                e.getBody().applyForceToCenter(world.getGravity().cpy().scl(-area * 1.1f), true);
-
-                Vector2 drag = e.getBody().getLinearVelocity().cpy();
-                drag.scl(drag.len2());
-                e.getBody().applyForceToCenter(drag.scl(-FLUID_DRAG), true);
-
-                if (!e.hasController(KeyboardController.class))
-                    continue;
-
-                e.removeController(KeyboardController.class);
-                e.addController(new TimedSelfDestructController(2, score));
-                e.getBody().setFixedRotation(false);
-            }
-        }
+        doAcid();
 
         performanceMonitor.end("update");
     }
@@ -309,6 +271,52 @@ public class Level {
 
                 if (entity == boxis)
                     gameover = true;
+            }
+        }
+    }
+
+    private void doAcid() {
+        for (Sensor acid : acidSensors) {
+            float aLeft = acid.getPosition().x - acid.getExtents().x;
+            float aTop = acid.getPosition().y - acid.getExtents().y;
+            float aRight = aLeft + acid.getExtents().x * 2;
+            float aBottom = aTop + acid.getExtents().y * 2;
+
+            for (Entity e : acid.getTouchingEntities()) {
+                Vector2 p = e.getPosition();
+                Vector2 s = e.getSize();
+                float bLeft = p.x - s.x / 2;
+                float bTop = p.y - s.y / 2;
+                float bRight = p.x + s.x;
+                float bBottom = p.y + s.y;
+
+                float cLeft = Math.max(aLeft, bLeft);
+                float cTop = Math.max(aTop, bTop);
+                float cRight = Math.min(aRight, bRight);
+                float cBottom = Math.min(aBottom, bBottom);
+
+                float width = cRight - cLeft;
+                float height = cBottom - cTop;
+
+                float area = width * height;
+
+                Vector2 centreOfIntersection = new Vector2((cLeft + cRight) / 2, +(cTop + cBottom) / 2);
+
+                e.getBody().applyForce(world.getGravity().cpy().scl(-area * 1.1f), centreOfIntersection, true);
+
+                Vector2 drag = e.getBody().getLinearVelocity().cpy();
+                drag.scl(drag.len2());
+                e.getBody().applyForce(
+                        drag.scl(-FLUID_DRAG),
+                        centreOfIntersection,
+                        true);
+
+                if (!e.hasController(KeyboardController.class))
+                    continue;
+
+                e.removeController(KeyboardController.class);
+                e.addController(new TimedSelfDestructController(2, score));
+                e.getBody().setFixedRotation(false);
             }
         }
     }
