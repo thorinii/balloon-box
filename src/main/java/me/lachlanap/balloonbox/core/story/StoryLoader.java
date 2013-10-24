@@ -1,20 +1,20 @@
 package me.lachlanap.balloonbox.core.story;
 
 import com.badlogic.gdx.files.FileHandle;
-import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.google.common.io.Files;
-import static com.google.common.base.Preconditions.*;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkElementIndex;
 
 /**
  * A helper class for loading a {@link Story} from a text file.
@@ -42,7 +42,7 @@ public class StoryLoader {
         List<String> lines = new ArrayList<>();
 
         try (
-                InputStreamReader isr = new InputStreamReader(stream);
+                InputStreamReader isr = new InputStreamReader(stream, StandardCharsets.UTF_8);
                 BufferedReader br = new BufferedReader(isr)) {
             String line;
             while ((line = br.readLine()) != null)
@@ -62,6 +62,8 @@ public class StoryLoader {
         raw = Iterables.transform(raw, new Function<String, String>() {
             @Override
             public String apply(String input) {
+                if (input == null)
+                    return null;
                 return input.trim();
             }
         });
@@ -69,6 +71,8 @@ public class StoryLoader {
             @Override
             public boolean apply(String input) {
                 // filter blank lines and comments
+                if (input == null)
+                    return false;
                 return !input.isEmpty() && !input.startsWith("#");
             }
         });

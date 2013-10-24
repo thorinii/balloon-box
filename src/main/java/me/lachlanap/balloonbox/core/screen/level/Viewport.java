@@ -2,7 +2,6 @@ package me.lachlanap.balloonbox.core.screen.level;
 
 import com.badlogic.gdx.math.Vector2;
 import me.lachlanap.balloonbox.core.level.Entity;
-import me.lachlanap.lct.Constant;
 
 /**
  *
@@ -10,10 +9,8 @@ import me.lachlanap.lct.Constant;
  */
 public class Viewport {
 
-    @Constant(name = "X Margin", constraints = "0,500")
-    public static float X_MARGIN = 300f;
-    @Constant(name = "Y Margin", constraints = "0,500")
-    public static float Y_MARGIN = 230f;
+    public static final float X_MARGIN = 300f;
+    public static final float Y_MARGIN = 230f;
     //
     private final Vector2 size;
     private final Vector2 centre;

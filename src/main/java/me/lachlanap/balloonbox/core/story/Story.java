@@ -1,6 +1,9 @@
 package me.lachlanap.balloonbox.core.story;
 
-import static com.google.common.base.Preconditions.*;
+import java.util.Arrays;
+import java.util.List;
+
+import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  *
@@ -12,7 +15,9 @@ public class Story {
 
     public Story(Scene[] scenes) {
         checkArgument(scenes.length > 0, "Cannot have no Scenes in a Story");
-        this.scenes = scenes;
+
+        this.scenes = new Scene[scenes.length];
+        System.arraycopy(scenes, 0, this.scenes, 0, scenes.length);
     }
 
     public Scene getScene(int i) {
@@ -23,8 +28,8 @@ public class Story {
         return scenes.length;
     }
 
-    public Scene[] getScenes() {
-        return scenes;
+    public List<Scene> getScenes() {
+        return Arrays.asList(scenes);
     }
 
     @Override

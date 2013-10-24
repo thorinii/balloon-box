@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import me.lachlanap.lct.Constant;
 
 /**
  *
@@ -12,8 +11,7 @@ import me.lachlanap.lct.Constant;
  */
 public class Background {
 
-    @Constant(name = "Y Shift", constraints = "-1000,1000")
-    public static float BASE_Y_SHIFT = -750f;
+    public static final float BASE_Y_SHIFT = -750f;
     //
     private static final float[] PARALLAX_SPEEDS = {
         0.3f, 0.5f, 0.7f, 0.75f

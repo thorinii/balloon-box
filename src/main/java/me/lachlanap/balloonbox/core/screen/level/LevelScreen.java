@@ -23,8 +23,7 @@ public class LevelScreen extends AbstractScreen {
     public static final float PIXELS_IN_A_METRE = 240f;
     @Constant(name = "Debug")
     public static boolean DEBUG = false;
-    @Constant(name = "Acid Size")
-    public static float ACID_SIZE = 1.18f;
+    public static final float ACID_SIZE = 1.18f;
     private final Level level;
     private final PerformanceMonitor performanceMonitor;
     private final Viewport viewport;

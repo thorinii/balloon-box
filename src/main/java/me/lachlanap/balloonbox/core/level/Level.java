@@ -24,8 +24,7 @@ import me.lachlanap.lct.Constant;
 public class Level {
 
     public static final Logger LOG = Logger.getLogger(Level.class.getName());
-    @Constant(name = "Fluid Drag", constraints = "0,1")
-    public static float FLUID_DRAG = 0.15f;
+    public static final float FLUID_DRAG = 0.17f;
     @Constant(name = "Exit Fan Override")
     public static boolean EXIT_FAN_OVERRIDE = false;
     public static final float EXIT_SENSOR_WIDTH = 0.2f;

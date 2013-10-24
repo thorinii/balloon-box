@@ -120,7 +120,7 @@ public class SensorManager implements ContactListener {
         return entities;
     }
 
-    public class Sensor {
+    public static class Sensor {
 
         private final String name;
         private final Vector2 position, extents;
