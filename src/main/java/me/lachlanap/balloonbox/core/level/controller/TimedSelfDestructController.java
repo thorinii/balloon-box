@@ -8,29 +8,26 @@ import me.lachlanap.balloonbox.core.level.Score;
  */
 public class TimedSelfDestructController extends Controller {
 
-    private final float time;
+    private final long timeToRunOn;
     private final Score score;
-    private float ticks;
     private boolean executed = false;
 
     public TimedSelfDestructController(float time) {
-        this.time = time;
+        this.timeToRunOn = System.currentTimeMillis() + (long) (time * 1000);
         this.score = null;
     }
 
     public TimedSelfDestructController(float time, Score score) {
-        this.time = time;
+        this.timeToRunOn = System.currentTimeMillis() + (long) (time * 1000);
         this.score = score;
     }
 
     @Override
     public void update(float tpf) {
-        ticks += tpf;
-
         if (executed)
             return;
 
-        if (ticks >= time) {
+        if (System.currentTimeMillis() >= timeToRunOn) {
             if (score != null)
                 score.takeLife();
             else

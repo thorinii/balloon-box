@@ -14,6 +14,7 @@ import me.lachlanap.balloonbox.core.level.physics.*;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BatteryCollisionHandler;
+import me.lachlanap.balloonbox.core.level.physics.impl.SpikeCollisionHandler;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.lct.Constant;
 
@@ -140,6 +141,7 @@ public class Level {
         EntityCollisionContactHandler entityCollisionContactHandler = new EntityCollisionContactHandler(this);
         entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
         entityCollisionContactHandler.addContactHandler(new BatteryCollisionHandler(score));
+        entityCollisionContactHandler.addContactHandler(new SpikeCollisionHandler(score));
 
         world.setContactListener(new DelegatingContactListener(
                 entityCollisionContactHandler,
