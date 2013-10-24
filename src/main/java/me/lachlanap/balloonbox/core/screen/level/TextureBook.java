@@ -31,6 +31,7 @@ public class TextureBook {
         entityTextures.put(EntityType.BLOCK, new Texture(Gdx.files.internal("wall/brick.png")));
         entityTextures.put(EntityType.BALLOON, new Texture(Gdx.files.internal("balloon/balloon.png")));
         entityTextures.put(EntityType.BATTERY, new Texture(Gdx.files.internal("battery/battery.png")));
+        entityTextures.put(EntityType.SPIKES, new Texture(Gdx.files.internal("spikes/spikes.png")));
 
         acidTexture = new Texture(Gdx.files.internal("acid/acid.png"));
         acidTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);

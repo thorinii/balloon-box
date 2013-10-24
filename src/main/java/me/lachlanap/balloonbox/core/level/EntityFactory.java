@@ -13,6 +13,7 @@ public class EntityFactory {
     private static final Vector2 BRICK_SIZE = new Vector2(.6f, .2f);
     private static final Vector2 BALLOON_SIZE = new Vector2(.256f, .64f);
     private static final Vector2 BATTERY_SIZE = new Vector2(.3f, .14f);
+    private static final Vector2 SPIKES_SIZE = new Vector2(.2f, 1f);
 
     public static Entity makeBoxis(Vector2 pos) {
         Entity boxis = new Entity(false, pos, BOXIS_SIZE, EntityType.BOXIS, true);
@@ -35,5 +36,9 @@ public class EntityFactory {
 
     public static Entity makeBattery(Vector2 pos) {
         return new Entity(true, pos, BATTERY_SIZE, EntityType.BATTERY, false);
+    }
+
+    public static Entity makeSpike(Vector2 pos) {
+        return new Entity(true, pos, SPIKES_SIZE, EntityType.SPIKES, false);
     }
 }

@@ -32,7 +32,7 @@ public class Level {
     public static final float EXIT_SENSOR_HEIGHT = 1.5f;
     public static final float EXIT_SCALE = 0.027f;
     public static final float MAX_EXIT_SUCTION = 0.035f;
-    public static final float X_EXIT_SCALE = 0.05f;
+    public static final float X_EXIT_SCALE = 0.02f;
     //
     private final StaticLevelData staticLevelData;
     private final List<Entity> entities;

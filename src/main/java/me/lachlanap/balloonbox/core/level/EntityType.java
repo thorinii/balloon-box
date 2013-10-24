@@ -6,5 +6,5 @@ package me.lachlanap.balloonbox.core.level;
  */
 public enum EntityType {
 
-    BOXIS, BLOCK, BALLOON, BATTERY
+    BOXIS, BLOCK, BALLOON, BATTERY, SPIKES
 }
