@@ -32,7 +32,7 @@ public class Level {
     public static final float EXIT_SENSOR_HEIGHT = 1.5f;
     public static final float EXIT_SCALE = 0.027f;
     public static final float MAX_EXIT_SUCTION = 0.035f;
-    public static final float X_EXIT_SCALE = 0.02f;
+    public static final float X_EXIT_SCALE = 0.01f;
     //
     private final StaticLevelData staticLevelData;
     private final List<Entity> entities;
@@ -57,17 +57,21 @@ public class Level {
         public final Vector2 exitPoint;
         public final List<Vector2> balloons;
         public final List<Vector2> batteries;
+        public final List<Vector2> spikes;
         public final List<Rectangle> acids;
         public final Rectangle bounds;
 
         public StaticLevelData(boolean[][] brickMap, Vector2 spawnPoint, Vector2 exitPoint,
-                List<Vector2> balloons,
-                List<Vector2> batteries, List<Rectangle> acids) {
+                List<Vector2> balloons, List<Vector2> batteries, List<Vector2> spikes,
+                List<Rectangle> acids) {
             this.brickMap = brickMap;
-            this.balloons = balloons;
             this.spawnPoint = spawnPoint;
             this.exitPoint = exitPoint;
+
+            this.balloons = balloons;
             this.batteries = batteries;
+            this.spikes = spikes;
+
             this.acids = acids;
 
             bounds = new Rectangle();
@@ -79,12 +83,14 @@ public class Level {
 
             spawnPoint.scl(GRID_SCALE);
             exitPoint.scl(GRID_SCALE);
-            for (Vector2 balloon : balloons) {
+
+            for (Vector2 balloon : balloons)
                 balloon.scl(GRID_SCALE);
-            }
-            for (Vector2 battery : batteries) {
+            for (Vector2 battery : batteries)
                 battery.scl(GRID_SCALE);
-            }
+            for (Vector2 spike : spikes)
+                spike.scl(GRID_SCALE);
+
             for (Rectangle acid : acids) {
                 acid.x *= GRID_SCALE;
                 acid.y *= GRID_SCALE;
@@ -114,7 +120,6 @@ public class Level {
         acidSensors = new Sensor[staticLevelData.acids.size()];
 
         setupWorld();
-
 
         addBoxis();
 
@@ -156,6 +161,11 @@ public class Level {
         LOG.info("Charging batteries...");
         for (Vector2 battery : staticLevelData.batteries) {
             addEntity(EntityFactory.makeBattery(battery));
+        }
+
+        LOG.info("Stacking knives...");
+        for (Vector2 spike : staticLevelData.spikes) {
+            addEntity(EntityFactory.makeSpike(spike.cpy().add(0, EntityFactory.SPIKES_SIZE.y / 2f)));
         }
     }
 

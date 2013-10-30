@@ -29,12 +29,10 @@ public class LevelLoader {
         LOG.log(java.util.logging.Level.INFO, "Loading level {0}", mapName);
         TiledMap map = tmxMapLoader.load("maps/" + mapName + ".tmx");
 
-
         LOG.info("Unpacking bricks...");
         TiledMapTileLayer brickLayer = (TiledMapTileLayer) map.getLayers().get("bricks");
         final float unitsInGrid = brickLayer.getTileHeight();
         boolean[][] brickMap = loadBricks(brickLayer);
-
 
         LOG.info("Processing Point Data");
         MapLayer pointsLayer = map.getLayers().get("points");
@@ -43,6 +41,7 @@ public class LevelLoader {
 
         List<Vector2> balloons = loadVectors(unitsInGrid, map.getLayers().get("balloons"));
         List<Vector2> batteries = loadVectors(unitsInGrid, map.getLayers().get("batteries"));
+        List<Vector2> spikes = loadVectors(unitsInGrid, map.getLayers().get("spikes"));
         List<Rectangle> acids;
         if (map.getLayers().get("acid") != null)
             acids = loadRectangles(unitsInGrid, map.getLayers().get("acid"));
@@ -51,10 +50,10 @@ public class LevelLoader {
 
         map.dispose();
 
-
         StaticLevelData staticLevelData = new StaticLevelData(brickMap,
                                                               spawnPoint, exitPoint,
-                                                              balloons, batteries, acids);
+                                                              balloons, batteries, spikes,
+                                                              acids);
         return new Level(new Vector2(0, -9.81f), staticLevelData);
     }
 
@@ -94,7 +93,7 @@ public class LevelLoader {
         List<Rectangle> list = new ArrayList<>();
 
         if (layer == null)
-            LOG.warning("Couldn't load vectors");
+            LOG.warning("Couldn't load rectangles");
         else
             for (MapObject obj : layer.getObjects()) {
                 if (obj instanceof RectangleMapObject) {

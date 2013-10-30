@@ -9,11 +9,11 @@ import me.lachlanap.balloonbox.core.level.controller.KeyboardController;
  */
 public class EntityFactory {
 
-    private static final Vector2 BOXIS_SIZE = new Vector2(.3f, .3f);
-    private static final Vector2 BRICK_SIZE = new Vector2(.6f, .2f);
-    private static final Vector2 BALLOON_SIZE = new Vector2(.256f, .64f);
-    private static final Vector2 BATTERY_SIZE = new Vector2(.3f, .14f);
-    private static final Vector2 SPIKES_SIZE = new Vector2(.2f, 1f);
+    public static final Vector2 BOXIS_SIZE = new Vector2(.3f, .3f);
+    public static final Vector2 BRICK_SIZE = new Vector2(.6f, .2f);
+    public static final Vector2 BALLOON_SIZE = new Vector2(.256f, .64f);
+    public static final Vector2 BATTERY_SIZE = new Vector2(.3f, .14f);
+    public static final Vector2 SPIKES_SIZE = new Vector2(.2f, 1f);
 
     public static Entity makeBoxis(Vector2 pos) {
         Entity boxis = new Entity(false, pos, BOXIS_SIZE, EntityType.BOXIS, true);

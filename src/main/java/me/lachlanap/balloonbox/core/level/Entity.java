@@ -40,8 +40,6 @@ public class Entity {
             body = Box2DFactory.createDynamic(world, initialPosition, size, 1);
         }
 
-        System.out.println(this + ": " + initialPosition + " - " + getPosition());
-
         if (needsGroundSensor) {
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.isSensor = true;
