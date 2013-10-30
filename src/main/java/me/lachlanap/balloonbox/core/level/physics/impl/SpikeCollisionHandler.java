@@ -25,7 +25,6 @@ public class SpikeCollisionHandler implements EntityCollisionHandler {
         if (a.getType() != EntityType.SPIKES && b.getType() != EntityType.SPIKES)
             return;
 
-        final Entity spike = (a.getType() == EntityType.SPIKES) ? a : b;
         final Entity boxis = (a.getType() != EntityType.SPIKES) ? a : b;
 
         if (boxis.getType() == EntityType.BOXIS) {

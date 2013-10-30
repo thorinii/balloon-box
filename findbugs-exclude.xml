@@ -1,5 +1,7 @@
 <FindBugsFilter>
 	<Match>
 		<Bug code="ICAST" />
+		<Bug code="MS" />
+		<Bug code="MS_SHOULD_BE_FINAL" />
 	</Match>
 </FindBugsFilter>

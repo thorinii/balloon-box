@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import me.lachlanap.balloonbox.core.BalloonBoxGame;
-import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 import me.lachlanap.balloonbox.core.level.*;
+import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
@@ -62,7 +62,6 @@ public class LevelScreen extends AbstractScreen {
 
         Gdx.gl.glClearColor(1, 1, 1, 0);
         Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
 
         performanceMonitor.begin("render");
         batch.begin();
@@ -167,7 +166,6 @@ public class LevelScreen extends AbstractScreen {
                    0, 0, entryPipe.getWidth(), entryPipe.getHeight(),
                    false, false);
 
-
         Texture exitPipe = textureBook.getEntryPipeTexture();
         Vector2 exitPipePosition = level.getStaticLevelData().exitPoint;
         batch.draw(exitPipe,
@@ -213,7 +211,6 @@ public class LevelScreen extends AbstractScreen {
                                size.y * 2 * PIXELS_IN_A_METRE);
         }
 
-
         shapeRenderer.setColor(0f, 0f, 0f, 1);
         shapeRenderer.rect(-10 + viewportCentre.x, -10 + viewportCentre.y,
                            20, 20);
@@ -227,7 +224,6 @@ public class LevelScreen extends AbstractScreen {
                            2000, 2000);
 
         shapeRenderer.end();
-
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(0f, 0f, 0f, 1);
