@@ -8,7 +8,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import me.lachlanap.balloonbox.core.level.Level;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 import me.lachlanap.lct.LCTManager;
 import me.lachlanap.lct.gui.LCTEditor;
 
@@ -21,9 +21,10 @@ public class DevToolsWindow {
     private final LCTManager lctManager;
     private final PerformanceMonitor performanceMonitor;
     private final JFrame frame;
-    private ManualActionsPanel manualActionsPanel;
+    private final MessageBus messageBus;
 
-    public DevToolsWindow(LCTManager lctManager, PerformanceMonitor performanceMonitor) {
+    public DevToolsWindow(MessageBus messageBus, LCTManager lctManager, PerformanceMonitor performanceMonitor) {
+        this.messageBus = messageBus;
         this.lctManager = lctManager;
         this.performanceMonitor = performanceMonitor;
 
@@ -46,7 +47,7 @@ public class DevToolsWindow {
         LCTEditor lctEditor = new LCTEditor(lctManager);
         pane.add(wrap(lctEditor, "Live Constant Tweaker"));
 
-        manualActionsPanel = new ManualActionsPanel();
+        ManualActionsPanel manualActionsPanel = new ManualActionsPanel(messageBus);
         pane.add(wrap(manualActionsPanel, "Manual Actions"));
 
         LogMonitor logMonitor = new LogMonitor();
@@ -61,7 +62,7 @@ public class DevToolsWindow {
         wrapper.setLayout(new BorderLayout());
         wrapper.setBorder(
                 BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.BLACK, 1, true), title));
+                        BorderFactory.createLineBorder(Color.BLACK, 1, true), title));
         wrapper.add(comp, BorderLayout.CENTER);
 
         return wrapper;
@@ -69,9 +70,5 @@ public class DevToolsWindow {
 
     public void toggleVisibility() {
         frame.setVisible(!frame.isVisible());
-    }
-
-    public void setLevel(Level level) {
-        manualActionsPanel.setLevel(level);
     }
 }

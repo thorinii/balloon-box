@@ -2,8 +2,8 @@ package me.lachlanap.balloonbox.core.level.physics.impl;
 
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
-import me.lachlanap.balloonbox.core.level.Score;
 import me.lachlanap.balloonbox.core.level.physics.EntityCollisionHandler;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 
 /**
  *
@@ -11,10 +11,10 @@ import me.lachlanap.balloonbox.core.level.physics.EntityCollisionHandler;
  */
 public class BatteryCollisionHandler implements EntityCollisionHandler {
 
-    private final Score score;
+    private final MessageBus messageBus;
 
-    public BatteryCollisionHandler(Score score) {
-        this.score = score;
+    public BatteryCollisionHandler(MessageBus messageBus) {
+        this.messageBus = messageBus;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class BatteryCollisionHandler implements EntityCollisionHandler {
         Entity other = (a.getType() != EntityType.BATTERY) ? a : b;
 
         if (other.getType() == EntityType.BOXIS) {
-            score.collectBattery();
+            messageBus.collectedBattery();
             battery.markForKill();
         }
     }

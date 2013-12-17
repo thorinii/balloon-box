@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 
 /**
  *
@@ -24,6 +25,11 @@ public class LevelLoader {
 
     private static final Logger LOG = Logger.getLogger(LevelLoader.class.getName());
     private final TmxMapLoader tmxMapLoader = new TmxMapLoader();
+    private final MessageBus messageBus;
+
+    public LevelLoader(MessageBus messageBus) {
+        this.messageBus = messageBus;
+    }
 
     public Level loadLevel(String mapName) {
         LOG.log(java.util.logging.Level.INFO, "Loading level {0}", mapName);
@@ -54,7 +60,7 @@ public class LevelLoader {
                                                               spawnPoint, exitPoint,
                                                               balloons, batteries, spikes,
                                                               acids);
-        return new Level(new Vector2(0, -9.81f), staticLevelData);
+        return new Level(messageBus, new Vector2(0, -9.81f), staticLevelData);
     }
 
     private boolean[][] loadBricks(TiledMapTileLayer brickLayer) {

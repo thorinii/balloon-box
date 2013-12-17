@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import me.lachlanap.balloonbox.core.level.Level;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 
 /**
  *
@@ -13,23 +13,20 @@ import me.lachlanap.balloonbox.core.level.Level;
  */
 public class ManualActionsPanel extends JPanel {
 
-    private Level level;
+    private final MessageBus messageBus;
 
-    public ManualActionsPanel() {
+    public ManualActionsPanel(MessageBus messageBus) {
+        this.messageBus = messageBus;
+
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         JButton takeLifeBtn = new JButton("Take Life");
         takeLifeBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (level != null)
-                    level.getScore().takeLife();
+                ManualActionsPanel.this.messageBus.died();
             }
         });
         add(takeLifeBtn);
-    }
-
-    public void setLevel(Level level) {
-        this.level = level;
     }
 }

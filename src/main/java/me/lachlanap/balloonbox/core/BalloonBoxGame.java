@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 import me.lachlanap.balloonbox.core.level.Level;
 import me.lachlanap.balloonbox.core.level.loader.LevelLoader;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 import me.lachlanap.balloonbox.core.perf.DevToolsWindow;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
@@ -26,18 +27,21 @@ import org.reflections.util.ConfigurationBuilder;
 public class BalloonBoxGame extends Game {
 
     private static final Logger LOG = Logger.getLogger(BalloonBoxGame.class.getName());
+    private final MessageBus messageBus;
     private final PerformanceMonitor performanceMonitor;
     private final DevToolsWindow devToolsWindow;
     private final LevelLoader loader;
     private StoryController storyController;
 
     public BalloonBoxGame() {
-        loader = new LevelLoader();
+        messageBus = new MessageBus();
+
+        loader = new LevelLoader(messageBus);
 
         LCTManager manager = setupLCTManager();
 
         performanceMonitor = new PerformanceMonitor();
-        devToolsWindow = new DevToolsWindow(manager, performanceMonitor);
+        devToolsWindow = new DevToolsWindow(messageBus, manager, performanceMonitor);
     }
 
     private LCTManager setupLCTManager() {
@@ -66,6 +70,7 @@ public class BalloonBoxGame extends Game {
     }
 
     public void gotoEoLScreen(EndOfLevelInfo info) {
+        messageBus.disconnectTransientListeners();
         setScreen(new EndOfLevelScreen(this, info));
     }
 
@@ -103,7 +108,6 @@ public class BalloonBoxGame extends Game {
 
                 Level level = loader.loadLevel(levelScene.getName());
                 setScreen(new LevelScreen(BalloonBoxGame.this, level, performanceMonitor));
-                devToolsWindow.setLevel(level);
             }
         }
 

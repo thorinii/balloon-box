@@ -3,10 +3,10 @@ package me.lachlanap.balloonbox.core.level.physics.impl;
 import com.badlogic.gdx.Gdx;
 import me.lachlanap.balloonbox.core.level.Entity;
 import me.lachlanap.balloonbox.core.level.EntityType;
-import me.lachlanap.balloonbox.core.level.Score;
 import me.lachlanap.balloonbox.core.level.controller.KeyboardController;
 import me.lachlanap.balloonbox.core.level.controller.TimedSelfDestructController;
 import me.lachlanap.balloonbox.core.level.physics.EntityCollisionHandler;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 
 /**
  *
@@ -14,10 +14,10 @@ import me.lachlanap.balloonbox.core.level.physics.EntityCollisionHandler;
  */
 public class SpikeCollisionHandler implements EntityCollisionHandler {
 
-    private final Score score;
+    private final MessageBus messageBus;
 
-    public SpikeCollisionHandler(Score score) {
-        this.score = score;
+    public SpikeCollisionHandler(MessageBus messageBus) {
+        this.messageBus = messageBus;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class SpikeCollisionHandler implements EntityCollisionHandler {
                 return;
 
             boxis.removeController(KeyboardController.class);
-            boxis.addController(new TimedSelfDestructController(2, score));
+            boxis.addController(new TimedSelfDestructController(2, messageBus));
 
             Gdx.app.postRunnable(new Runnable() {
                 @Override

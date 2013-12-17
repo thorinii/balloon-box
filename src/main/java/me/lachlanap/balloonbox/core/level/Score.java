@@ -2,6 +2,8 @@ package me.lachlanap.balloonbox.core.level;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
+import me.lachlanap.balloonbox.core.messaging.SimpleMessageListener;
 
 public class Score {
 
@@ -16,7 +18,31 @@ public class Score {
     //
     private boolean tookLifeSinceLastUpdate;
 
-    public Score() {
+    public Score(MessageBus messageBus) {
+        messageBus.addMessageListener(new SimpleMessageListener() {
+
+            @Override
+            public void collectedBalloon() {
+                Score.this.collectBalloon();
+            }
+
+            @Override
+            public void collectedBattery() {
+                Score.this.collectBattery();
+            }
+
+            @Override
+            public void collectedLife() {
+                Score.this.collectLife();
+            }
+
+            @Override
+            public void died() {
+                Score.this.takeLife();
+            }
+
+        });
+
         balloons = 0;
         lives = DEFAULT_LIVES;
         batteries = 0;
@@ -24,19 +50,19 @@ public class Score {
         tookLifeSinceLastUpdate = false;
     }
 
-    public void collectBalloon() {
+    private void collectBalloon() {
         balloons++;
     }
 
-    public void collectBattery() {
+    private void collectBattery() {
         batteries++;
     }
 
-    public void collectLife() {
+    private void collectLife() {
         lives++;
     }
 
-    public void takeLife() {
+    private void takeLife() {
         lives = Math.max(0, lives - 1);
         tookLifeSinceLastUpdate = true;
 

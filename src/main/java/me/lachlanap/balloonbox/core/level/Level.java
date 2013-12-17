@@ -15,6 +15,7 @@ import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.level.physics.impl.BalloonCollisionHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.BatteryCollisionHandler;
 import me.lachlanap.balloonbox.core.level.physics.impl.SpikeCollisionHandler;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.lct.Constant;
 
@@ -34,6 +35,7 @@ public class Level {
     public static final float MAX_EXIT_SUCTION = 0.035f;
     public static final float X_EXIT_SCALE = 0.01f;
     //
+    private final MessageBus messageBus;
     private final StaticLevelData staticLevelData;
     private final List<Entity> entities;
     private final Score score;
@@ -62,8 +64,8 @@ public class Level {
         public final Rectangle bounds;
 
         public StaticLevelData(boolean[][] brickMap, Vector2 spawnPoint, Vector2 exitPoint,
-                List<Vector2> balloons, List<Vector2> batteries, List<Vector2> spikes,
-                List<Rectangle> acids) {
+                               List<Vector2> balloons, List<Vector2> batteries, List<Vector2> spikes,
+                               List<Rectangle> acids) {
             this.brickMap = brickMap;
             this.spawnPoint = spawnPoint;
             this.exitPoint = exitPoint;
@@ -100,11 +102,12 @@ public class Level {
         }
     }
 
-    public Level(
-            Vector2 gravity,
-            StaticLevelData staticLevelData) {
+    public Level(MessageBus messageBus,
+                 Vector2 gravity,
+                 StaticLevelData staticLevelData) {
+        this.messageBus = messageBus;
         entities = new ArrayList<>();
-        score = new Score();
+        score = new Score(messageBus);
 
         this.staticLevelData = staticLevelData;
 
@@ -144,9 +147,9 @@ public class Level {
         Box2DFactory.createPipe(world, staticLevelData.exitPoint);
 
         EntityCollisionContactHandler entityCollisionContactHandler = new EntityCollisionContactHandler(this);
-        entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(score));
-        entityCollisionContactHandler.addContactHandler(new BatteryCollisionHandler(score));
-        entityCollisionContactHandler.addContactHandler(new SpikeCollisionHandler(score));
+        entityCollisionContactHandler.addContactHandler(new BalloonCollisionHandler(messageBus));
+        entityCollisionContactHandler.addContactHandler(new BatteryCollisionHandler(messageBus));
+        entityCollisionContactHandler.addContactHandler(new SpikeCollisionHandler(messageBus));
 
         world.setContactListener(new DelegatingContactListener(
                 entityCollisionContactHandler,
@@ -221,7 +224,7 @@ public class Level {
         performanceMonitor.end("update.box2d");
 
         if (boxis != null && !staticLevelData.bounds.contains(boxis.getPosition())) {
-            score.takeLife();
+            messageBus.died();
         }
 
         score.update(boxis, timerManager, new CreateBoxisTask());
@@ -233,7 +236,7 @@ public class Level {
         performanceMonitor.end("update.removing-dead");
 
         if (!gameover
-                && (score.getBatteries() >= staticLevelData.batteries.size() || EXIT_FAN_OVERRIDE)) {
+            && (score.getBatteries() >= staticLevelData.batteries.size() || EXIT_FAN_OVERRIDE)) {
             doExitFan();
         }
         doAcid();
@@ -326,7 +329,7 @@ public class Level {
                     continue;
 
                 e.removeController(KeyboardController.class);
-                e.addController(new TimedSelfDestructController(2, score));
+                e.addController(new TimedSelfDestructController(2, messageBus));
                 e.getBody().setFixedRotation(false);
             }
         }
