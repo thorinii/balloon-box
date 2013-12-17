@@ -8,8 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import java.text.NumberFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import me.lachlanap.balloonbox.core.BalloonBoxGame;
 import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 
 /**
@@ -24,8 +24,8 @@ public class EndOfLevelScreen extends AbstractScreen {
     private final boolean won;
     private final Map<String, String> data = new LinkedHashMap<>();
 
-    public EndOfLevelScreen(BalloonBoxGame game, EndOfLevelInfo info) {
-        super(game);
+    public EndOfLevelScreen(MessageBus messageBus, EndOfLevelInfo info) {
+        super(messageBus);
 
         levelName = info.levelName;
         won = info.lives > 0;
@@ -92,14 +92,14 @@ public class EndOfLevelScreen extends AbstractScreen {
     }
 
     private void gotoNextMap() {
-        game.gotoNextLevel();
+        messageBus.nextLevel();
     }
 
     private void gotoSameMap() {
-        game.gotoSameLevel();
+        messageBus.restartLevel();
     }
 
     private void gotoMainMenu() {
-        game.gotoMainMenu();
+        messageBus.exitLevel();
     }
 }

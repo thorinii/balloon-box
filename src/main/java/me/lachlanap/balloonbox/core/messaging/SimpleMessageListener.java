@@ -1,10 +1,15 @@
 package me.lachlanap.balloonbox.core.messaging;
 
+import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
+
 /**
  *
  * @author lachlan
  */
-public abstract class SimpleMessageListener implements MessageListener {
+public class SimpleMessageListener implements MessageListener {
+
+    protected SimpleMessageListener() {
+    }
 
     @Override
     public boolean disconnectTransientListeners() {
@@ -27,5 +32,23 @@ public abstract class SimpleMessageListener implements MessageListener {
     public void died() {
     }
 
+    @Override
+    public void endOfLevel(EndOfLevelInfo info) {
+    }
 
+    @Override
+    public void nextLevel() {
+    }
+
+    @Override
+    public void restartLevel() {
+    }
+
+    @Override
+    public void exitLevel() {
+    }
+
+    @Override
+    public void toggleDevTools() {
+    }
 }

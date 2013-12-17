@@ -1,8 +1,9 @@
 package me.lachlanap.balloonbox.core.messaging;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import me.lachlanap.balloonbox.core.level.EndOfLevelInfo;
 
 /**
  *
@@ -13,7 +14,7 @@ public class MessageBus {
     private final List<MessageListener> listeners;
 
     public MessageBus() {
-        listeners = new ArrayList<>();
+        listeners = new CopyOnWriteArrayList<>();
     }
 
     public void addMessageListener(MessageListener listener) {
@@ -54,4 +55,30 @@ public class MessageBus {
             listener.died();
     }
 
+
+    public void endOfLevel(EndOfLevelInfo info) {
+        for (MessageListener listener : listeners)
+            listener.endOfLevel(info);
+    }
+
+    public void nextLevel() {
+        for (MessageListener listener : listeners)
+            listener.nextLevel();
+    }
+
+    public void restartLevel() {
+        for (MessageListener listener : listeners)
+            listener.restartLevel();
+    }
+
+    public void exitLevel() {
+        for (MessageListener listener : listeners)
+            listener.exitLevel();
+    }
+
+
+    public void toggleDevTools() {
+        for (MessageListener listener : listeners)
+            listener.toggleDevTools();
+    }
 }

@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import me.lachlanap.balloonbox.core.BalloonBoxGame;
 import me.lachlanap.balloonbox.core.level.*;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
 import me.lachlanap.balloonbox.core.screen.AbstractScreen;
 import me.lachlanap.lct.Constant;
@@ -32,8 +32,8 @@ public class LevelScreen extends AbstractScreen {
     private float timeSinceLastUpdate;
     private float activeTime;
 
-    public LevelScreen(BalloonBoxGame game, Level level, PerformanceMonitor performanceMonitor) {
-        super(game);
+    public LevelScreen(MessageBus messageBus, Level level, PerformanceMonitor performanceMonitor) {
+        super(messageBus);
         this.level = level;
 
         this.performanceMonitor = performanceMonitor;
@@ -92,7 +92,7 @@ public class LevelScreen extends AbstractScreen {
             renderDebug(viewportCentre);
 
         if (level.isGameover())
-            game.gotoEoLScreen(EndOfLevelInfo.fromLevel(
+            messageBus.endOfLevel(EndOfLevelInfo.fromLevel(
                     level,
                     activeTime));
     }

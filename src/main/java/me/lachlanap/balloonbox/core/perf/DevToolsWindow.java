@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import me.lachlanap.balloonbox.core.messaging.MessageBus;
+import me.lachlanap.balloonbox.core.messaging.SimpleMessageListener;
 import me.lachlanap.lct.LCTManager;
 import me.lachlanap.lct.gui.LCTEditor;
 
@@ -55,6 +56,16 @@ public class DevToolsWindow {
 
         PerformanceStatViewer statViewer = new PerformanceStatViewer(performanceMonitor);
         pane.add(wrap(statViewer, "Performance Stats"));
+
+
+        messageBus.addMessageListener(new SimpleMessageListener() {
+
+            @Override
+            public void toggleDevTools() {
+                frame.setVisible(!frame.isVisible());
+            }
+
+        });
     }
 
     private Component wrap(Component comp, String title) {
@@ -66,9 +77,5 @@ public class DevToolsWindow {
         wrapper.add(comp, BorderLayout.CENTER);
 
         return wrapper;
-    }
-
-    public void toggleVisibility() {
-        frame.setVisible(!frame.isVisible());
     }
 }

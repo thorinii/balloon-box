@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import me.lachlanap.balloonbox.core.BalloonBoxGame;
+import me.lachlanap.balloonbox.core.messaging.MessageBus;
 
 /**
  *
@@ -17,13 +17,13 @@ import me.lachlanap.balloonbox.core.BalloonBoxGame;
  */
 public abstract class AbstractScreen implements Screen, InputProcessor {
 
-    protected final BalloonBoxGame game;
+    protected final MessageBus messageBus;
     protected final SpriteBatch batch;
     protected final ShapeRenderer shapeRenderer;
     protected final BitmapFont fontBig;
 
-    public AbstractScreen(BalloonBoxGame game) {
-        this.game = game;
+    public AbstractScreen(MessageBus messageBus) {
+        this.messageBus = messageBus;
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
@@ -76,7 +76,7 @@ public abstract class AbstractScreen implements Screen, InputProcessor {
     @Override
     public boolean keyUp(int keycode) {
         if (keycode == Input.Keys.F4) {
-            game.toggleDevTools();
+            messageBus.toggleDevTools();
         }
 
         return true;
