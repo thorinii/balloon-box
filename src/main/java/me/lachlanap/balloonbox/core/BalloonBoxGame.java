@@ -80,17 +80,19 @@ public class BalloonBoxGame extends Game {
 
         @Override
         public void nextLevel() {
+            messageBus.disconnectTransientListeners();
             storyController.advance();
         }
 
         @Override
         public void restartLevel() {
+            messageBus.disconnectTransientListeners();
             storyController.again();
         }
 
         @Override
         public void exitLevel() {
-            LOG.info("Going to MainMenu");
+            messageBus.disconnectTransientListeners();
             setScreen(new AbstractScreen(messageBus) {
             });
         }
