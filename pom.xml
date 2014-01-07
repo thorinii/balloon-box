@@ -124,9 +124,11 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>2.5.2</version>
                 <configuration>
-                    <xmlOutput>true</xmlOutput>
+                    <effort>Max</effort>
                     <excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
                     <failOnError>false</failOnError>
+                    <threshold>Default</threshold>
+                    <xmlOutput>true</xmlOutput>
                 </configuration>
             </plugin>
         </plugins>

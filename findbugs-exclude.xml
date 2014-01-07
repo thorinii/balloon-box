@@ -1,7 +1,6 @@
 <FindBugsFilter>
-	<Match>
-		<Bug code="ICAST" />
-		<Bug code="MS" />
-		<Bug code="MS_SHOULD_BE_FINAL" />
-	</Match>
+	<Or>
+		<Bug pattern="ICAST_IDIV_CAST_TO_DOUBLE" />
+		<Bug pattern="MS_SHOULD_BE_FINAL" />
+	</Or>
 </FindBugsFilter>
