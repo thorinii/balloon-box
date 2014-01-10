@@ -41,17 +41,21 @@ public class Animation {
     }
 
     public Step getStep(float selectedTime) {
-        float timeSoFar = 0;
+        if (isInfinite()) {
+            return steps.get(0);
+        } else {
+            float timeSoFar = 0;
 
-        for (Step step : steps) {
-            if (timeSoFar <= selectedTime && timeSoFar + step.length > selectedTime)
-                return step;
+            for (Step step : steps) {
+                if (timeSoFar <= selectedTime && timeSoFar + step.length > selectedTime)
+                    return step;
 
-            timeSoFar += step.length;
+                timeSoFar += step.length;
+            }
+
+            throw new IllegalArgumentException("selectedTime out of range for this " + totalTime + " second animation;"
+                                               + " could not find step at " + selectedTime + " seconds");
         }
-
-        throw new IllegalArgumentException("selectedTime out of range for this " + totalTime + " second animation;"
-                                           + " could not find step at " + selectedTime + " seconds");
     }
 
     @Override

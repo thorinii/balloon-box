@@ -26,7 +26,25 @@ public class EntityAnimations {
     public static final Animation BOXIS_IDLE = new AnimationBuilder() {
         {
             pushStep(2, image("box/box.png"), image("box/box-eye-centre.png"));
-            pushStep(0.3f, image("box/box.png"), image("box/box-eye-blink.png"));
+            pushStep(0.2f, image("box/box.png"), image("box/box-eye-blink.png"));
+        }
+    }.build();
+
+    public static final Animation BOXIS_SLIDE_LEFT = new AnimationBuilder() {
+        {
+            pushStep(0.2f, image("box/box.png"), image("box/box-eye-left.png"));
+        }
+    }.build();
+
+    public static final Animation BOXIS_SLIDE_RIGHT = new AnimationBuilder() {
+        {
+            pushStep(0.2f, image("box/box.png"), image("box/box-eye-right.png"));
+        }
+    }.build();
+
+    public static final Animation BOXIS_DEAD = new AnimationBuilder() {
+        {
+            pushStep(INFINITE, image("box/box.png"));
         }
     }.build();
 

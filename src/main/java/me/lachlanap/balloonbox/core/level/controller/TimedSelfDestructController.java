@@ -1,5 +1,7 @@
 package me.lachlanap.balloonbox.core.level.controller;
 
+import me.lachlanap.balloonbox.core.level.EntityAnimations;
+import me.lachlanap.balloonbox.core.level.EntityType;
 import me.lachlanap.balloonbox.core.messaging.MessageBus;
 
 /**
@@ -26,6 +28,9 @@ public class TimedSelfDestructController extends Controller {
     public void update(float tpf) {
         if (executed)
             return;
+
+        if (entity.getType() == EntityType.BOXIS)
+            entity.setAnimation(EntityAnimations.BOXIS_DEAD);
 
         if (System.currentTimeMillis() >= timeToRunOn) {
             if (messageBus != null)
