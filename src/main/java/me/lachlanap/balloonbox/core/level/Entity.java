@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import me.lachlanap.balloonbox.core.level.animation.Animation;
 import me.lachlanap.balloonbox.core.level.controller.Controller;
 import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
 
@@ -12,7 +13,7 @@ import me.lachlanap.balloonbox.core.level.physics.Box2DFactory;
  *
  * @author lachlan
  */
-public class Entity {
+public final class Entity {
 
     private final List<Controller> controllers = new ArrayList<>();
     private final boolean fixed;
@@ -20,17 +21,27 @@ public class Entity {
     private final Vector2 size;
     private final EntityType type;
     private final boolean needsGroundSensor;
+    private final EntityAnimationController animationController;
+
     private Body body;
     private Fixture groundSensor;
     private int onGroundContacts;
     private boolean markedForKill;
 
-    public Entity(boolean fixed, Vector2 initialPosition, Vector2 size, EntityType type, boolean needsGroundSensor) {
+    public Entity(boolean fixed,
+                  Vector2 initialPosition,
+                  Vector2 size,
+                  EntityType type,
+                  boolean needsGroundSensor,
+                  EntityAnimationController animationController) {
         this.fixed = fixed;
         this.initialPosition = initialPosition.cpy();
         this.size = size;
         this.type = type;
         this.needsGroundSensor = needsGroundSensor;
+        this.animationController = animationController;
+
+        animationController.setDefaultAnimation(EntityAnimations.defaultAnimationFor(type));
     }
 
     void attachToWorld(World world) {
@@ -102,6 +113,8 @@ public class Entity {
         for (Controller c : controllers) {
             c.update(tpf);
         }
+
+        animationController.update();
     }
 
     public void addOnGround() {
@@ -162,11 +175,23 @@ public class Entity {
         return type != EntityType.BALLOON;
     }
 
+    public void setAnimation(Animation animation) {
+        animationController.setAnimation(animation);
+    }
+
+    public void setAnimationToDefault() {
+        animationController.resetAnimation();
+    }
+
+    public EntityAnimationController getAnimationController() {
+        return animationController;
+    }
+
     @Override
     public String toString() {
         return "[Entity #" + Integer.toHexString(hashCode()).toUpperCase() + ":"
-                + " type=" + type.name()
-                + " fixed=" + fixed
-                + "]";
+               + " type=" + type.name()
+               + " fixed=" + fixed
+               + "]";
     }
 }

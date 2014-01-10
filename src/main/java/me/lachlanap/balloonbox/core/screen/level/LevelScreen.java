@@ -29,6 +29,8 @@ public class LevelScreen extends AbstractScreen {
     private final Viewport viewport;
     private final TextureBook textureBook;
     private final Background background;
+    private final AnimatedEntityRenderer animatedEntityRenderer;
+
     private float timeSinceLastUpdate;
     private float activeTime;
 
@@ -46,6 +48,8 @@ public class LevelScreen extends AbstractScreen {
         textureBook.load();
 
         background = new Background(textureBook, level.getStaticLevelData().spawnPoint);
+
+        animatedEntityRenderer = new AnimatedEntityRenderer(textureBook, batch, viewport);
 
         activeTime = 0;
     }
@@ -99,18 +103,7 @@ public class LevelScreen extends AbstractScreen {
 
     private void renderEntities(Vector2 viewportCentre) {
         for (Entity e : level.getEntities()) {
-            Vector2 centre = e.getPosition();
-            Texture texture = textureBook.getEntityTexture(e.getType());
-
-            batch.draw(texture,
-                       centre.x * PIXELS_IN_A_METRE - texture.getWidth() / 2 + viewportCentre.x,
-                       centre.y * PIXELS_IN_A_METRE - texture.getHeight() / 2 + viewportCentre.y,
-                       texture.getWidth() / 2, texture.getHeight() / 2,
-                       texture.getWidth(), texture.getHeight(),
-                       1, 1,
-                       e.getAngle(),
-                       0, 0, texture.getWidth(), texture.getHeight(),
-                       false, false);
+            animatedEntityRenderer.render(e);
         }
     }
 

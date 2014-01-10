@@ -3,7 +3,10 @@ package me.lachlanap.balloonbox.core.screen.level;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Map;
 import me.lachlanap.balloonbox.core.level.EntityType;
+import me.lachlanap.balloonbox.core.level.animation.Animation;
 
 /**
  *
@@ -12,6 +15,7 @@ import me.lachlanap.balloonbox.core.level.EntityType;
 public class TextureBook {
 
     private final EnumMap<EntityType, Texture> entityTextures;
+    private final Map<String, Texture> entityAnimationTextures;
     //
     private Texture acidTexture;
     //
@@ -24,6 +28,7 @@ public class TextureBook {
 
     public TextureBook() {
         entityTextures = new EnumMap<>(EntityType.class);
+        entityAnimationTextures = new HashMap<>();
     }
 
     public void load() {
@@ -51,6 +56,16 @@ public class TextureBook {
 
     public Texture getEntityTexture(EntityType type) {
         return entityTextures.get(type);
+    }
+
+    public Texture getEntityAnimationTexture(Animation.Image image) {
+        if (entityAnimationTextures.containsKey(image.name))
+            return entityAnimationTextures.get(image.name);
+        else {
+            Texture tex = new Texture(Gdx.files.internal(image.name));
+            entityAnimationTextures.put(image.name, tex);
+            return tex;
+        }
     }
 
     public Texture getAcidTexture() {

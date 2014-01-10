@@ -16,29 +16,29 @@ public class EntityFactory {
     public static final Vector2 SPIKES_SIZE = new Vector2(.2f, 1f);
 
     public static Entity makeBoxis(Vector2 pos) {
-        Entity boxis = new Entity(false, pos, BOXIS_SIZE, EntityType.BOXIS, true);
+        Entity boxis = new Entity(false, pos, BOXIS_SIZE, EntityType.BOXIS, true, new EntityAnimationController());
         boxis.addController(new KeyboardController());
 
         return boxis;
     }
 
     public static Entity makeBox(Vector2 pos) {
-        return new Entity(false, pos, BOXIS_SIZE, EntityType.BOXIS, true);
+        return new Entity(false, pos, BOXIS_SIZE, EntityType.BOXIS, true, new EntityAnimationController());
     }
 
     public static Entity makeBrick(Vector2 pos) {
-        return new Entity(true, pos, BRICK_SIZE, EntityType.BLOCK, false);
+        return new Entity(true, pos, BRICK_SIZE, EntityType.BLOCK, false, new EntityAnimationController());
     }
 
     public static Entity makeBalloon(Vector2 pos) {
-        return new Entity(true, pos, BALLOON_SIZE, EntityType.BALLOON, false);
+        return new Entity(true, pos, BALLOON_SIZE, EntityType.BALLOON, false, new EntityAnimationController());
     }
 
     public static Entity makeBattery(Vector2 pos) {
-        return new Entity(true, pos, BATTERY_SIZE, EntityType.BATTERY, false);
+        return new Entity(true, pos, BATTERY_SIZE, EntityType.BATTERY, false, new EntityAnimationController());
     }
 
     public static Entity makeSpike(Vector2 pos) {
-        return new Entity(true, pos, SPIKES_SIZE, EntityType.SPIKES, false);
+        return new Entity(true, pos, SPIKES_SIZE, EntityType.SPIKES, false, new EntityAnimationController());
     }
 }
