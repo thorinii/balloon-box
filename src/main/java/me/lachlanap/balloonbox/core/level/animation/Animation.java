@@ -53,8 +53,10 @@ public class Animation {
                 timeSoFar += step.length;
             }
 
-            throw new IllegalArgumentException("selectedTime out of range for this " + totalTime + " second animation;"
-                                               + " could not find step at " + selectedTime + " seconds");
+            return steps.get(steps.size() - 1);
+
+            //throw new IllegalArgumentException("selectedTime out of range for this " + totalTime + " second animation;"
+            //                                   + " could not find step at " + selectedTime + " seconds");
         }
     }
 

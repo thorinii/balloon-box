@@ -29,6 +29,19 @@ public class EntityAnimations {
         return null;
     }
 
+    public static float hashShiftFor(Entity e) {
+        long hash;
+        switch (e.getType()) {
+            case BALLOON:
+            case BATTERY:
+            case SPIKES:
+                hash = e.hashCode();
+                return ((hash ^ 237287) % 3000) / 7000f;
+            default:
+                return 0f;
+        }
+    }
+
     public static final Animation BALLOON = new AnimationBuilder() {
         {
             pushStep(.2f, image("balloon/balloon-1.png"));

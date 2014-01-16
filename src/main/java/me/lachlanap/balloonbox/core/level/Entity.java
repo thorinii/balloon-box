@@ -42,6 +42,7 @@ public final class Entity {
         this.animationController = animationController;
 
         animationController.setDefaultAnimation(EntityAnimations.defaultAnimationFor(type));
+        animationController.setShift(EntityAnimations.hashShiftFor(this));
     }
 
     void attachToWorld(World world) {
