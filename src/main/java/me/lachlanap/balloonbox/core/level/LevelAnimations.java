@@ -16,9 +16,18 @@ import static me.lachlanap.balloonbox.core.level.animation.AnimationBuilder.INFI
  */
 public class LevelAnimations {
 
-    public static final Animation ACID = new AnimationBuilder() {
+    public static final Animation EXIT_FAN_PLATE_OFF = new AnimationBuilder() {
         {
-            pushStep(INFINITE, image("acid/acid.png"));
+            pushStep(INFINITE, image("pipes/plate-off.png"));
+        }
+    }.build();
+
+    public static final Animation EXIT_FAN_PLATE_ON = new AnimationBuilder() {
+        {
+            pushStep(.06f, image("pipes/plate-on-1.png"));
+            pushStep(.06f, image("pipes/plate-on-2.png"));
+            pushStep(.06f, image("pipes/plate-on-3.png"));
+            pushStep(.06f, image("pipes/plate-on-2.png"));
         }
     }.build();
 

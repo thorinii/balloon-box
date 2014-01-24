@@ -221,6 +221,10 @@ public class Level {
         return gameover;
     }
 
+    public boolean isExitActive() {
+        return score.getBatteries() >= staticLevelData.batteries.size() || EXIT_FAN_OVERRIDE;
+    }
+
     public void update() {
         performanceMonitor.begin("update");
 
@@ -243,8 +247,7 @@ public class Level {
         removeDeadEntities();
         performanceMonitor.end("update.removing-dead");
 
-        if (!gameover
-            && (score.getBatteries() >= staticLevelData.batteries.size() || EXIT_FAN_OVERRIDE)) {
+        if (!gameover && isExitActive()) {
             doExitFan();
         }
         doAcid();

@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import me.lachlanap.balloonbox.core.level.*;
 import me.lachlanap.balloonbox.core.level.Level.StaticLevelData;
+import me.lachlanap.balloonbox.core.level.animation.Animation;
 import me.lachlanap.balloonbox.core.level.physics.SensorManager.Sensor;
 import me.lachlanap.balloonbox.core.messaging.MessageBus;
 import me.lachlanap.balloonbox.core.perf.PerformanceMonitor;
@@ -175,6 +176,22 @@ public class LevelScreen extends AbstractScreen {
                    0,
                    0, 0, exitPipe.getWidth(), exitPipe.getHeight(),
                    false, false);
+
+        Animation exitPipeAnimation = level.isExitActive() ? LevelAnimations.EXIT_FAN_PLATE_ON : LevelAnimations.EXIT_FAN_PLATE_OFF;
+        Animation.Step step = level.getLevelAnimationController().getStepOf(exitPipeAnimation, Vector2.Zero);
+        for (Animation.Image image : step.images) {
+            Texture texture = textureBook.getEntityAnimationTexture(image);
+
+            batch.draw(texture,
+                       exitPipePosition.x * PIXELS_IN_A_METRE - texture.getWidth() / 2 + viewportCentre.x,
+                       exitPipePosition.y * PIXELS_IN_A_METRE + viewportCentre.y,
+                       texture.getWidth() / 2, texture.getHeight() / 2,
+                       texture.getWidth(), texture.getHeight(),
+                       1, 1,
+                       0,
+                       0, 0, texture.getWidth(), texture.getHeight(),
+                       false, false);
+        }
     }
 
     private void renderScore() {
