@@ -24,6 +24,8 @@ public class EntityAnimationController {
      */
     private long lastTime;
 
+    private boolean doShift;
+
     public void setDefaultAnimation(Animation newDefault) {
         defaultAnimation = newDefault;
         current = defaultAnimation;
@@ -31,6 +33,7 @@ public class EntityAnimationController {
 
     public void setShift(float shift) {
         this.shift = shift;
+        doShift = true;
     }
 
     public void resetAnimation() {
@@ -50,7 +53,8 @@ public class EntityAnimationController {
         float tpf = (now - lastTime) / (1f * 1000 * 1000 * 1000);
         lastTime = now;
 
-        currentAnimationTimer += tpf + shift / 10f;
+        currentAnimationTimer += tpf + ((doShift) ? shift / 10f : 0);
+        doShift = false;
 
         if (!current.isInfinite()
             && currentAnimationTimer >= current.getTotalTime() + shift)

@@ -110,13 +110,18 @@ public class LevelScreen extends AbstractScreen {
     private void renderAcids(Vector2 viewportCentre) {
         Texture texture = textureBook.getAcidTexture();
 
+        int totalHeight = (int) (ACID_SIZE * PIXELS_IN_A_METRE);
+
         for (Rectangle acid : level.getStaticLevelData().acids) {
+            float value = level.getLevelAnimationController().getLinearValue(0, 0, totalHeight, 5f);
+            int shift = (int) (value - (acid.height * totalHeight));
+
             batch.draw(texture, acid.x * PIXELS_IN_A_METRE + viewportCentre.x,
                        acid.y * PIXELS_IN_A_METRE + viewportCentre.y,
                        acid.width * PIXELS_IN_A_METRE, acid.height * PIXELS_IN_A_METRE,
-                       0, 0,
-                       (int) (acid.width * ACID_SIZE * PIXELS_IN_A_METRE),
-                       (int) (acid.height * ACID_SIZE * PIXELS_IN_A_METRE),
+                       0, shift,
+                       (int) (acid.width * totalHeight),
+                       (int) (acid.height * totalHeight),
                        false, false);
 
         }

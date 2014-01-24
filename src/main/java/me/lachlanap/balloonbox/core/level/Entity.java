@@ -65,7 +65,7 @@ public final class Entity {
     }
 
     void detachFromWorld(World world) {
-        for (JointEdge je : new ArrayList<>(body.getJointList()))
+        for (JointEdge je : body.getJointList())
             world.destroyJoint(je.joint);
 
         world.destroyBody(body);

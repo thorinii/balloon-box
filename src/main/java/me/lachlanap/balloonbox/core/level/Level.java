@@ -44,6 +44,7 @@ public class Level {
     private final Sensor exitFanSensor;
     private final TimerManager timerManager;
     private final Sensor[] acidSensors;
+    private final LevelAnimationController levelAnimationController;
     //
     private PerformanceMonitor performanceMonitor = null;
     private boolean gameover;
@@ -136,6 +137,8 @@ public class Level {
             i++;
         }
 
+        levelAnimationController = new LevelAnimationController();
+
         gameover = false;
     }
 
@@ -210,6 +213,10 @@ public class Level {
         return sensorManager;
     }
 
+    public LevelAnimationController getLevelAnimationController() {
+        return levelAnimationController;
+    }
+
     public boolean isGameover() {
         return gameover;
     }
@@ -218,6 +225,7 @@ public class Level {
         performanceMonitor.begin("update");
 
         timerManager.update(1 / 60f);
+        levelAnimationController.update();
 
         performanceMonitor.begin("update.box2d");
         world.step(1 / 60f, 8, 3);
