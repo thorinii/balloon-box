@@ -17,6 +17,9 @@ public class TextureBook {
     private final EnumMap<EntityType, Texture> entityTextures;
     private final Map<String, Texture> entityAnimationTextures;
     //
+    private Texture brickTexture1;
+    private Texture brickTexture2;
+    //
     private Texture acidTexture;
     //
     private Texture entryPipeTexture;
@@ -33,9 +36,11 @@ public class TextureBook {
 
     public void load() {
         entityTextures.put(EntityType.BOXIS, new Texture(Gdx.files.internal("box/box.png")));
-        entityTextures.put(EntityType.BLOCK, new Texture(Gdx.files.internal("wall/brick.png")));
         entityTextures.put(EntityType.BATTERY, new Texture(Gdx.files.internal("battery/battery.png")));
         entityTextures.put(EntityType.SPIKES, new Texture(Gdx.files.internal("spikes/spikes.png")));
+
+        brickTexture1 = new Texture(Gdx.files.internal("wall/brick.png"));
+        brickTexture2 = new Texture(Gdx.files.internal("wall/brick2.png"));
 
         acidTexture = new Texture(Gdx.files.internal("acid/acid.png"));
         acidTexture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
@@ -47,7 +52,9 @@ public class TextureBook {
             new Texture(Gdx.files.internal("backgrounds/background-1.png")),
             new Texture(Gdx.files.internal("backgrounds/background-2.png")),
             new Texture(Gdx.files.internal("backgrounds/background-4.png")),
-            new Texture(Gdx.files.internal("backgrounds/background-4.png")),};
+            new Texture(Gdx.files.internal("backgrounds/background-4.png")),
+            new Texture(Gdx.files.internal("backgrounds/crane-1.png"))
+        };
 
         backgroundTop = new Texture(Gdx.files.internal("backgrounds/background-1-top.png"));
         backgroundBottom = new Texture(Gdx.files.internal("backgrounds/background-1-bottom.png"));
@@ -65,6 +72,13 @@ public class TextureBook {
             entityAnimationTextures.put(image.name, tex);
             return tex;
         }
+    }
+
+    public Texture getBrickTexture(int x, int y) {
+        if (x * y % 2 == 0)
+            return brickTexture1;
+        else
+            return brickTexture2;
     }
 
     public Texture getAcidTexture() {

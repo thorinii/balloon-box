@@ -44,12 +44,13 @@ public class EntityAnimations {
 
     public static final Animation BALLOON = new AnimationBuilder() {
         {
-            pushStep(.2f, image("balloon/balloon-1.png"));
-            pushStep(.2f, image("balloon/balloon-2.png"));
-            pushStep(.2f, image("balloon/balloon-3.png"));
-            pushStep(.2f, image("balloon/balloon-4.png"));
-            pushStep(.2f, image("balloon/balloon-3.png"));
-            pushStep(.2f, image("balloon/balloon-2.png"));
+            /*pushStep(.2f, image("balloon/balloon-1.png"));
+             pushStep(.2f, image("balloon/balloon-2.png"));
+             pushStep(.2f, image("balloon/balloon-3.png"));
+             pushStep(.2f, image("balloon/balloon-4.png"));
+             pushStep(.2f, image("balloon/balloon-3.png"));
+             pushStep(.2f, image("balloon/balloon-2.png"));*/
+            pushStep(INFINITE, image("balloon/balloon-drawn.png"));
         }
     }.build();
 
@@ -64,20 +65,21 @@ public class EntityAnimations {
 
     public static final Animation BOXIS_IDLE = new AnimationBuilder() {
         {
-            pushStep(2, image("box/box.png"), image("box/box-eye-centre.png"));
-            pushStep(.2f, image("box/box.png"), image("box/box-eye-blink.png"));
+            pushStep(2, image("box/box-centre.png"));
+            pushStep(.05f, image("box/box-blink-1.png"));
+            pushStep(.2f, image("box/box-blink-2.png"));
         }
     }.build();
 
     public static final Animation BOXIS_SLIDE_LEFT = new AnimationBuilder() {
         {
-            pushStep(.2f, image("box/box.png"), image("box/box-eye-left.png"));
+            pushStep(.2f, image("box/box-left.png"));
         }
     }.build();
 
     public static final Animation BOXIS_SLIDE_RIGHT = new AnimationBuilder() {
         {
-            pushStep(.2f, image("box/box.png"), image("box/box-eye-right.png"));
+            pushStep(.2f, image("box/box-right.png"));
         }
     }.build();
 
@@ -90,10 +92,10 @@ public class EntityAnimations {
 
     public static final Animation SPIKES = new AnimationBuilder() {
         {
-            pushStep(1f, image("spikes/spikes.png"));
-            pushStep(.1f, image("spikes/spikes-sparkle-1.png"));
-            pushStep(.4f, image("spikes/spikes.png"));
-            pushStep(.1f, image("spikes/spikes-sparkle-2.png"));
+            pushStep(INFINITE, image("spikes/spikes.png"));
+            //pushStep(.1f, image("spikes/spikes-sparkle-1.png"));
+            //pushStep(.4f, image("spikes/spikes.png"));
+            //pushStep(.1f, image("spikes/spikes-sparkle-2.png"));
         }
     }.build();
 

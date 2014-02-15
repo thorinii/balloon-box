@@ -114,7 +114,7 @@ public class LevelScreen extends AbstractScreen {
         int totalHeight = (int) (ACID_SIZE * PIXELS_IN_A_METRE);
 
         for (Rectangle acid : level.getStaticLevelData().acids) {
-            float value = level.getLevelAnimationController().getLinearValue(0, 0, totalHeight, 5f);
+            float value = level.getLevelAnimationController().getLinearValue(0, 0, totalHeight, 10f);
             int shift = (int) (value - (acid.height * totalHeight));
 
             batch.draw(texture, acid.x * PIXELS_IN_A_METRE + viewportCentre.x,
@@ -131,12 +131,12 @@ public class LevelScreen extends AbstractScreen {
     private void renderBricks(Vector2 viewportCentre) {
         boolean[][] brickMap = level.getStaticLevelData().brickMap;
 
-        Texture texture = textureBook.getEntityTexture(EntityType.BLOCK);
-
         for (int i = 0; i < brickMap.length; i++) {
             for (int j = brickMap[0].length - 1; j >= 0; j--) {
                 if (!brickMap[i][j])
                     continue;
+
+                Texture texture = textureBook.getBrickTexture(i, j);
 
                 batch.draw(texture,
                            i * PIXELS_IN_A_METRE * StaticLevelData.GRID_SCALE + viewportCentre.x,

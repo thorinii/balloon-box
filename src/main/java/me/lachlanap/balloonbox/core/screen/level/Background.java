@@ -14,13 +14,13 @@ public class Background {
     public static final float BASE_Y_SHIFT = -750f;
     //
     private static final float[] PARALLAX_SPEEDS = {
-        0.3f, 0.5f, 0.7f, 0.75f
+        0.3f, 0.5f, 0.7f, 0.75f, 0.8f
     };
     private static final int[] PARALLAX_WIDTH_SCALE = {
-        1, 5, 13, 13
+        1, 5, 13, 13, 15
     };
     private static final int[] PARALLAX_HEIGHT_SHIFT = {
-        0, 1000, 2000, 3000
+        0, 1000, 2000, 3000, 750
     };
     //
     private final TextureBook textureBook;
@@ -69,8 +69,9 @@ public class Background {
             basePosition.y += BASE_Y_SHIFT + PARALLAX_HEIGHT_SHIFT[i];
             basePosition.y *= parallaxSpeed;
 
-            while (basePosition.x < -bWidth)
+            while (basePosition.x < -bWidth) {
                 basePosition.x += bWidth;
+            }
 
             while (basePosition.x <= Gdx.graphics.getWidth()) {
                 batch.draw(background, basePosition.x, basePosition.y);
